@@ -1,13 +1,39 @@
-import React from 'react'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-const App = () => {
+import Header from "./component/header/header.jsx";
+import Footer from "./component/footer/footer.jsx";
+
+import Lh from "./pages/landingpage.jsx";
+import AboutPage from "./pages/aboutpage.jsx";
+
+function App() {
   return (
-    <div>
-       <h1 class="text-3xl font-bold underline">
-    Hello world!
-  </h1>
-    </div>
-  )
+    <BrowserRouter>
+
+      <Routes>
+
+        {/* HOME PAGE */}
+        <Route
+          path="/"
+          element={
+            <>
+              <Header />
+              <Lh />
+              <Footer />
+            </>
+          }
+        />
+
+        {/* ABOUT PAGE */}
+        <Route
+          path="/about"
+          element={<AboutPage />}
+        />
+
+      </Routes>
+
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
