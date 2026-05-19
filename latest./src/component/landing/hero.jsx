@@ -18,10 +18,20 @@ export default function Hero() {
   const scrollDownRef = useRef(null);
   const floatingTweenRef = useRef(null);
 
-  // ✅ SAFE FIX: replaces vw for consistent behavior across all screens
+  // ✅ Window dimensions dynamic calculations (Prevents Windows layout breaking)
   const getSafeX = () => {
     if (typeof window === "undefined") return 0;
     return window.innerWidth * 0.15;
+  };
+
+  const getSafeYPhase1 = () => {
+    if (typeof window === "undefined") return 0;
+    return window.innerHeight * 0.35; // Dynamically scales vertical movement
+  };
+
+  const getSafeYPhase2 = () => {
+    if (typeof window === "undefined") return 0;
+    return window.innerHeight * 0.04; // Adaptive micro-offset for scaling
   };
 
   useEffect(() => {
@@ -136,7 +146,7 @@ export default function Hero() {
           });
 
           // ============================================
-          // PHASE 1 (FIXED: no vw dependency)
+          // PHASE 1 (DYNAMIC VIEWPORT VALUES)
           // ============================================
           scrollTl.fromTo(
             leftTextRef.current,
@@ -155,7 +165,7 @@ export default function Hero() {
           scrollTl.fromTo(
             videoWrapRef.current,
             { y: 0 },
-            { y: 300, ease: "none" },
+            { y: getSafeYPhase1(), ease: "none" }, // Fixed: No hardcoded 300px
             0
           );
 
@@ -181,13 +191,13 @@ export default function Hero() {
           );
 
           // ============================================
-          // PHASE 2 (FIXED RESPONSIVE SAFE SIZE ONLY)
+          // PHASE 2 (DYNAMIC RELATIVE TRANSLATION)
           // ============================================
           scrollTl.to(videoWrapRef.current, {
             width: "clamp(420px, 60vw, 900px)",
             height: "clamp(420px, 70vh, 700px)",
             scale: 1.1,
-            y: 30,
+            y: getSafeYPhase1() + getSafeYPhase2(), // Fixed: Smooth relative additive value
             ease: "none"
           }, 0.5);
 
