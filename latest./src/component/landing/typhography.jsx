@@ -10,8 +10,6 @@ const HeroTypography = () => {
   const desktopRef = useRef(null);
   const [dimensions, setDimensions] = useState({ width: 1920, height: 1080 });
 
-  // 🔥 BULLETPROOF: Use ResizeObserver to get ACTUAL rendered size
-  // This fixes Windows 125% scaling because it measures the DOM, not viewport units
   useEffect(() => {
     if (window.innerWidth <= 768) return;
 
@@ -29,12 +27,31 @@ const HeroTypography = () => {
     return () => observer.disconnect();
   }, []);
 
-  // Calculate positions based on ACTUAL container size (not vw/vh)
   const getPositions = () => {
     const { width, height } = dimensions;
 
-    // Scale factor based on actual width (like vw but accurate)
-    const scale = width / 1920;
+    // Base font size
+    const cinematicSize = Math.min(200, Math.max(60, width * 0.12));
+    const kineticSize = cinematicSize;
+    const typographySize = Math.min(160, Math.max(50, width * 0.10));
+
+    // 🔥 IMPORTANT: lineHeight factor must match actual CSS lineHeight
+    // lineHeight: 0.85 means text occupies 85% of fontSize vertically
+    const lineHeightFactor = 0.85;
+
+    // Gaps (in pixels)
+    const gapCinematicKinetic = 4;   // Small gap between CINEMATIC and KINETIC
+    const gapKineticTypography = 40; // Bigger gap before TYPOGRAPHY DESIGN
+
+    // Top positions
+    const cinematicTop = Math.max(100, height * 0.18);
+
+    // KINETIC = CINEMATIC top + CINEMATIC rendered height + gap
+    // Rendered height = fontSize * lineHeightFactor
+    const kineticTop = cinematicTop + (cinematicSize * lineHeightFactor) + gapCinematicKinetic;
+
+    // TYPOGRAPHY = KINETIC top + KINETIC rendered height + gap
+    const typographyTop = kineticTop + (kineticSize * lineHeightFactor) + gapKineticTypography;
 
     return {
       // Top left text
@@ -43,21 +60,21 @@ const HeroTypography = () => {
       topLeftSize: Math.min(28, Math.max(16, width * 0.018)),
 
       // CINEMATIC
-      cinematicTop: Math.max(100, height * 0.18),
-      cinematicSize: Math.min(200, Math.max(60, width * 0.12)),
+      cinematicTop,
+      cinematicSize,
 
-      // KINETIC (tight below CINEMATIC)
-      kineticTop: Math.max(100, height * 0.18) + (Math.min(200, Math.max(60, width * 0.12)) * 0.75),
-      kineticSize: Math.min(200, Math.max(60, width * 0.12)),
+      // KINETIC
+      kineticTop,
+      kineticSize,
 
-      // Top right text
-      topRightTop: Math.max(100, height * 0.18) + (Math.min(200, Math.max(60, width * 0.12)) * 0.75) + 20,
+      // Top right text (aligned with KINETIC middle)
+      topRightTop: kineticTop + (kineticSize * lineHeightFactor * 0.3),
       topRightRight: Math.max(16, width * 0.03),
       topRightSize: Math.min(30, Math.max(16, width * 0.019)),
 
-      // TYPOGRAPHY DESIGN (with proper gap below KINETIC)
-      typographyTop: Math.max(100, height * 0.18) + (Math.min(200, Math.max(60, width * 0.12)) * 0.75) + (Math.min(200, Math.max(60, width * 0.12)) * 0.85) + 40,
-      typographySize: Math.min(160, Math.max(50, width * 0.10)),
+      // TYPOGRAPHY DESIGN
+      typographyTop,
+      typographySize,
     };
   };
 
@@ -120,19 +137,11 @@ const HeroTypography = () => {
       style={{ 
         WebkitFontSmoothing: "antialiased", 
         MozOsxFontSmoothing: "grayscale",
-        height: "auto",
         minHeight: "100dvh"
       }}
     >
 
-      {/* ========================================================================= */}
-      {/* 💻 DESKTOP - ABSOLUTE POSITIONING with JS-calculated pixels              */}
-      {/* ========================================================================= */}
-      {/* 
-        Using ResizeObserver to get ACTUAL rendered container size.
-        This bypasses Windows 125% scaling issues because we measure the DOM
-        after the browser applies scaling, not viewport units.
-      */}
+      {/* 💻 DESKTOP */}
       <div 
         ref={desktopRef}
         className="hidden md:block w-full relative" 
@@ -141,24 +150,28 @@ const HeroTypography = () => {
 
         {/* Top Left Text */}
         <div 
-          className="absolute text-white leading-[0.9] text-right"
+          className="absolute text-white text-right"
           style={{ 
             top: `${pos.topLeftTop}px`, 
             left: `${pos.topLeftLeft}px`,
-            zIndex: 20 
+            zIndex: 20,
+            lineHeight: "0.9"
           }}
         >
-          <h3 className="font-medium" style={{ fontSize: `${pos.topLeftSize}px` }}>UI/UX & Visual</h3>
-          <h3 className="font-medium" style={{ fontSize: `${pos.topLeftSize * 0.9}px` }}>Storytelling Designer</h3>
+          <h3 className="font-medium" style={{ fontSize: `${pos.topLeftSize}px`, lineHeight: "0.9", margin: 0, padding: 0 }}>UI/UX & Visual</h3>
+          <h3 className="font-medium" style={{ fontSize: `${pos.topLeftSize * 0.9}px`, lineHeight: "0.9", margin: 0, padding: 0 }}>Storytelling Designer</h3>
         </div>
 
         {/* CINEMATIC */}
         <h1
-          className="absolute left-1/2 -translate-x-1/2 text-white uppercase whitespace-nowrap font-normal tracking-[0.01em] leading-[0.8]"
+          className="absolute left-1/2 -translate-x-1/2 text-white uppercase whitespace-nowrap font-normal tracking-[0.01em]"
           style={{ 
             top: `${pos.cinematicTop}px`,
             fontSize: `${pos.cinematicSize}px`, 
-            fontFamily: "Anton, sans-serif" 
+            fontFamily: "Anton, sans-serif",
+            lineHeight: "0.85",
+            margin: 0,
+            padding: 0
           }}
         >
           CINEMATIC
@@ -166,11 +179,14 @@ const HeroTypography = () => {
 
         {/* KINETIC */}
         <h1
-          className="absolute left-1/2 -translate-x-1/2 text-white uppercase whitespace-nowrap font-normal tracking-[-0.02em] leading-none"
+          className="absolute left-1/2 -translate-x-1/2 text-white uppercase whitespace-nowrap font-normal tracking-[-0.02em]"
           style={{ 
             top: `${pos.kineticTop}px`,
             fontSize: `${pos.kineticSize}px`, 
-            fontFamily: "Anton, sans-serif" 
+            fontFamily: "Anton, sans-serif",
+            lineHeight: "0.95",
+            margin: 0,
+            padding: 0
           }}
         >
           KINETIC
@@ -178,47 +194,47 @@ const HeroTypography = () => {
 
         {/* Top Right Text */}
         <div 
-          className="absolute text-white leading-[0.9]"
+          className="absolute text-white"
           style={{ 
             top: `${pos.topRightTop}px`, 
             right: `${pos.topRightRight}px`,
-            zIndex: 20 
+            zIndex: 20,
+            lineHeight: "0.9"
           }}
         >
-          <h3 className="font-medium" style={{ fontSize: `${pos.topRightSize}px` }}>Creative</h3>
-          <h3 className="font-medium" style={{ fontSize: `${pos.topRightSize}px` }}>Direction</h3>
+          <h3 className="font-medium" style={{ fontSize: `${pos.topRightSize}px`, lineHeight: "0.9", margin: 0, padding: 0 }}>Creative</h3>
+          <h3 className="font-medium" style={{ fontSize: `${pos.topRightSize}px`, lineHeight: "0.9", margin: 0, padding: 0 }}>Direction</h3>
         </div>
 
         {/* TYPOGRAPHY DESIGN */}
         <h1
-          className="absolute left-1/2 -translate-x-1/2 text-white uppercase whitespace-nowrap font-normal tracking-[-0.02em] leading-[1.2]"
+          className="absolute left-1/2 -translate-x-1/2 text-white uppercase whitespace-nowrap font-normal tracking-[-0.02em]"
           style={{ 
             top: `${pos.typographyTop}px`,
             fontSize: `${pos.typographySize}px`, 
-            fontFamily: "Anton, sans-serif" 
+            fontFamily: "Anton, sans-serif",
+            lineHeight: "0.85",
+            margin: 0,
+            padding: 0
           }}
         >
           TYPOGRAPHY DESIGN
         </h1>
       </div>
 
-      {/* ========================================================================= */}
-      {/* 📱 MOBILE (below 768px) - CLEAN STATIC LAYOUT                           */}
-      {/* ========================================================================= */}
+      {/* 📱 MOBILE */}
       <div
         ref={mobileTextRef}
         className="flex md:hidden flex-col items-center w-full px-4 py-12 text-center"
         style={{ minHeight: "85dvh" }}
       >
 
-        {/* Top Label */}
-        <div className="text-white leading-[1.2] w-full max-w-[280px] mb-8">
+        <div className="text-white w-full max-w-[280px] mb-8">
           <h3 className="font-bold uppercase tracking-[0.2em] text-[11px] text-gray-400">
             UI/UX & Visual Storytelling Designer
           </h3>
         </div>
 
-        {/* Main Typography Stack */}
         <div className="flex flex-col items-center w-full leading-[0.82] gap-6 my-auto">
 
           <h1 
@@ -251,8 +267,7 @@ const HeroTypography = () => {
 
         </div>
 
-        {/* Bottom Label */}
-        <div className="text-white leading-[1.2] w-full max-w-[280px] mt-8">
+        <div className="text-white w-full max-w-[280px] mt-8">
           <h3 className="font-bold uppercase tracking-[0.15em] text-[11px] text-gray-400">
             Creative Direction
           </h3>
