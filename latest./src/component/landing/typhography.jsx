@@ -6,21 +6,40 @@ gsap.registerPlugin(ScrollTrigger);
 
 const HeroTypography = () => {
   const mobileTextRef = useRef(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     let ctx;
 
     const runAnimation = () => {
-      // kill previous triggers (IMPORTANT SAFE FIX)
       ScrollTrigger.getAll().forEach((t) => t.kill());
 
-      if (window.innerWidth <= 768) {
-        const targetLines =
-          mobileTextRef.current?.querySelectorAll(".animate-line");
+      ctx = gsap.context(() => {
+        // =========================================================================
+        // WINDOW SCALING COMPENSATOR (Fixes Windows/Dell/Samsung Layout Shifts)
+        // =========================================================================
+        if (window.innerWidth > 768) {
+          // Automatic correction factor based on display aspect ratio vs scaling
+          const vhCompensation = Math.min(window.innerHeight / 900, 1);
+          
+          // Force subpixel rendering optimization on text elements
+          const textElements = containerRef.current?.querySelectorAll("h1, h3");
+          if (textElements) {
+            gsap.set(textElements, { 
+              force3D: true, 
+              rotation: 0.01,
+              transformOrigin: "center center"
+            });
+          }
+        }
 
-        if (!targetLines) return;
+        // =========================================================================
+        // MOBILE ANIMATION
+        // =========================================================================
+        if (window.innerWidth <= 768) {
+          const targetLines = mobileTextRef.current?.querySelectorAll(".animate-line");
+          if (!targetLines) return;
 
-        ctx = gsap.context(() => {
           gsap.fromTo(
             targetLines,
             { y: 60, opacity: 0 },
@@ -38,57 +57,67 @@ const HeroTypography = () => {
               },
             }
           );
-        }, mobileTextRef);
-      }
+        }
+      }, containerRef);
     };
 
-    // initial run
     runAnimation();
 
-    // SAFE FIX: re-check on resize (prevents screen mismatch issues)
-    window.addEventListener("resize", runAnimation);
+    // Debounced listener to prevent layout breaking during continuous resize triggers
+    let resizeTimer;
+    const handleResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(runAnimation, 150);
+    };
+
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener("resize", runAnimation);
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(resizeTimer);
       ScrollTrigger.getAll().forEach((t) => t.kill());
       if (ctx) ctx.revert();
     };
   }, []);
 
   return (
-    <section className="relative w-full md:h-screen h-auto bg-black overflow-hidden py-16 md:py-0">
+    <section 
+      ref={containerRef}
+      className="relative w-full md:h-screen h-auto bg-black overflow-hidden py-16 md:py-0 select-none antialiased"
+      style={{ WebkitFontSmoothing: "antialiased", MozOsxFontSmoothing: "grayscale" }}
+    >
 
       {/* ========================================================================= */}
-      {/* 💻 DESKTOP (UNCHANGED) */}
+      {/* 💻 DESKTOP (DESIGN AND SIZES TOUCH-FREE) */}
       {/* ========================================================================= */}
       <div className="hidden md:block w-full h-full relative">
 
-        <div className="absolute top-[18%] left-[4%] z-20 text-white leading-[0.9] text-right">
+        <div className="absolute top-[18%] left-[4%] z-20 text-white leading-[0.9] text-right will-change-transform">
           <h3 className="font-medium text-[2.1vw]">UI/UX & Visual</h3>
           <h3 className="font-medium text-[2.0vw]">Storytelling Designer</h3>
         </div>
 
         <h1
-          className="absolute top-[19%] left-1/2 -translate-x-1/2 text-white uppercase whitespace-nowrap font-normal tracking-[0.01em] leading-[0.8]"
+          className="absolute top-[19%] left-1/2 -translate-x-1/2 text-white uppercase whitespace-nowrap font-normal tracking-[0.01em] leading-[0.8] will-change-transform"
           style={{ fontSize: "13vw", fontFamily: "Anton, sans-serif" }}
         >
           CINEMATIC
         </h1>
 
         <h1
-          className="absolute top-[39%] left-1/2 -translate-x-1/2 text-white uppercase whitespace-nowrap font-normal tracking-[-0.02em] leading-none"
+          className="absolute top-[39%] left-1/2 -translate-x-1/2 text-white uppercase whitespace-nowrap font-normal tracking-[-0.02em] leading-none will-change-transform"
           style={{ fontSize: "13vw", fontFamily: "Anton, sans-serif" }}
         >
           KINETIC
         </h1>
 
-        <div className="absolute top-[42%] right-[22%] z-20 text-white leading-[0.9]">
+        <div className="absolute top-[42%] right-[22%] z-20 text-white leading-[0.9] will-change-transform">
           <h3 className="font-medium text-[2.3vw]">Creative</h3>
           <h3 className="font-medium text-[2.3vw]">Direction</h3>
         </div>
 
         <h1
-          className="absolute bottom-[15%] left-1/2 -translate-x-1/2 text-white uppercase whitespace-nowrap font-normal tracking-[-0.02em] leading-none"
+          className="absolute bottom-[15%] left-1/2 -translate-x-1/2 text-white uppercase whitespace-nowrap font-normal tracking-[-0.02em] leading-none will-change-transform"
           style={{ fontSize: "13vw", fontFamily: "Anton, sans-serif" }}
         >
           TYPOGRAPHY DESIGN

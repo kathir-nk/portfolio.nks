@@ -18,7 +18,6 @@ const Footer = () => {
   };
 
   useEffect(() => {
-    // 🔥 Scroll fade animation (simple + clean)
     gsap.fromTo(
       footerRef.current,
       { opacity: 0, y: 80 },
@@ -46,22 +45,27 @@ const Footer = () => {
       '3swp4kt98wKTTcCPt'
     )
     .then(() => {
-        setStatus('success');
-        setMessageText('');
-        setTimeout(() => {
-          setIsModalOpen(false);
-          setStatus('');
-        }, 2000);
+      setStatus('success');
+      setMessageText('');
+      setTimeout(() => {
+        setIsModalOpen(false);
+        setStatus('');
+      }, 2000);
     }, () => {
-        setStatus('error');
+      setStatus('error');
     });
+  };
+
+  // ✅ ADDED ONLY THIS
+  const handleNavClick = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
     <footer ref={footerRef} className="w-full">
 
-      {/* ================== SECTION ================== */}
-      <div className="bg-white px-4 md:px-8 lg:px-12 pt-10 md:pt-14">
+      {/* SECTION */}
+      <div className="bg-white px-4 md:px-8 lg:px-17 pt-10 md:pt-14">
 
         <div className="flex justify-between items-start">
           <span className="text-lg font-medium">(FOLLOW)</span>
@@ -74,7 +78,7 @@ const Footer = () => {
         <div className="pt-6 md:pt-8 flex justify-between items-start">
 
           {/* LEFT */}
-          <div className="flex flex-col">
+          <div className="flex flex-col ">
 
             <a className="footer-link" href="https://www.instagram.com/stock_designer_?igsh=cHBnNHA0amdsYWdx" target="_blank">
               INSTAGRAM
@@ -96,12 +100,20 @@ const Footer = () => {
             </button>
           </div>
 
-          {/* RIGHT */}
+          {/* RIGHT (FIXED NAV) */}
           <div className="flex flex-col items-end">
 
-            <Link className="footer-link" to="/">HOME</Link>
-            <Link className="footer-link mt-3" to="/work">WORKS</Link>
-            <Link className="footer-link mt-3" to="/about">ABOUT</Link>
+            <Link className="footer-link" to="/" onClick={handleNavClick}>
+              HOME
+            </Link>
+
+            <Link className="footer-link mt-3" to="/work" onClick={handleNavClick}>
+              WORKS
+            </Link>
+
+            <Link className="footer-link mt-3" to="/about" onClick={handleNavClick}>
+              ABOUT
+            </Link>
 
           </div>
         </div>
@@ -115,7 +127,7 @@ const Footer = () => {
         <div className="pt-12 md:pt-16 lg:pt-20" />
       </div>
 
-      {/* ================== MARQUEE (SMOOTH FIXED) ================== */}
+      {/* MARQUEE */}
       <div className="bg-black py-6 overflow-hidden">
         <div className="marquee">
           <span>LET'S TALK</span>
@@ -129,7 +141,7 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* ================== MODAL (UNCHANGED) ================== */}
+      {/* MODAL */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
           <div className="bg-white w-full max-w-[550px] p-8">
@@ -155,7 +167,7 @@ const Footer = () => {
         </div>
       )}
 
-      {/* ================== STYLES ================== */}
+      {/* STYLES */}
       <style>{`
         .footer-link {
           font-size: 18px;
