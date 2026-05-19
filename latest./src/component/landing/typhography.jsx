@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -7,6 +7,61 @@ gsap.registerPlugin(ScrollTrigger);
 const HeroTypography = () => {
   const mobileTextRef = useRef(null);
   const containerRef = useRef(null);
+  const desktopRef = useRef(null);
+  const [dimensions, setDimensions] = useState({ width: 1920, height: 1080 });
+
+  // 🔥 BULLETPROOF: Use ResizeObserver to get ACTUAL rendered size
+  // This fixes Windows 125% scaling because it measures the DOM, not viewport units
+  useEffect(() => {
+    if (window.innerWidth <= 768) return;
+
+    const observer = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        const { width, height } = entry.contentRect;
+        setDimensions({ width, height });
+      }
+    });
+
+    if (desktopRef.current) {
+      observer.observe(desktopRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Calculate positions based on ACTUAL container size (not vw/vh)
+  const getPositions = () => {
+    const { width, height } = dimensions;
+
+    // Scale factor based on actual width (like vw but accurate)
+    const scale = width / 1920;
+
+    return {
+      // Top left text
+      topLeftTop: Math.max(80, height * 0.15),
+      topLeftLeft: Math.max(16, width * 0.03),
+      topLeftSize: Math.min(28, Math.max(16, width * 0.018)),
+
+      // CINEMATIC
+      cinematicTop: Math.max(100, height * 0.18),
+      cinematicSize: Math.min(200, Math.max(60, width * 0.12)),
+
+      // KINETIC (tight below CINEMATIC)
+      kineticTop: Math.max(100, height * 0.18) + (Math.min(200, Math.max(60, width * 0.12)) * 0.75),
+      kineticSize: Math.min(200, Math.max(60, width * 0.12)),
+
+      // Top right text
+      topRightTop: Math.max(100, height * 0.18) + (Math.min(200, Math.max(60, width * 0.12)) * 0.75) + 20,
+      topRightRight: Math.max(16, width * 0.03),
+      topRightSize: Math.min(30, Math.max(16, width * 0.019)),
+
+      // TYPOGRAPHY DESIGN (with proper gap below KINETIC)
+      typographyTop: Math.max(100, height * 0.18) + (Math.min(200, Math.max(60, width * 0.12)) * 0.75) + (Math.min(200, Math.max(60, width * 0.12)) * 0.85) + 40,
+      typographySize: Math.min(160, Math.max(50, width * 0.10)),
+    };
+  };
+
+  const pos = getPositions();
 
   useEffect(() => {
     let ctx;
@@ -15,9 +70,6 @@ const HeroTypography = () => {
       ScrollTrigger.getAll().forEach((t) => t.kill());
 
       ctx = gsap.context(() => {
-        // =========================================================================
-        // MOBILE ANIMATION ONLY (below 768px)
-        // =========================================================================
         if (window.innerWidth <= 768) {
           const targetLines = mobileTextRef.current?.querySelectorAll(".animate-line");
           if (!targetLines) return;
@@ -74,77 +126,81 @@ const HeroTypography = () => {
     >
 
       {/* ========================================================================= */}
-      {/* 💻 DESKTOP (768px and up) - FIXED PIXEL SIZES, NO vw/vh                 */}
+      {/* 💻 DESKTOP - ABSOLUTE POSITIONING with JS-calculated pixels              */}
       {/* ========================================================================= */}
       {/* 
-        Using fixed pixel breakpoints instead of vw/vh to avoid Windows scaling issues.
-        Windows laptops often use 125% display scaling which breaks viewport units.
-        Fixed pixels + responsive breakpoints = consistent across all screens.
+        Using ResizeObserver to get ACTUAL rendered container size.
+        This bypasses Windows 125% scaling issues because we measure the DOM
+        after the browser applies scaling, not viewport units.
       */}
-      <div className="hidden md:block w-full relative" style={{ height: "100dvh", minHeight: "600px" }}>
+      <div 
+        ref={desktopRef}
+        className="hidden md:block w-full relative" 
+        style={{ height: "100dvh", minHeight: "600px" }}
+      >
 
-{/* Top Left Text */}
-<div 
-  className="absolute text-white leading-[0.9] text-right"
-  style={{ 
-    top: "clamp(80px, 15vh, 140px)", 
-    left: "clamp(16px, 3vw, 48px)",
-    zIndex: 20 
-  }}
->
-  <h3 className="font-medium" style={{ fontSize: "clamp(18px, 1.8vw, 28px)" }}>UI/UX & Visual</h3>
-  <h3 className="font-medium" style={{ fontSize: "clamp(16px, 1.7vw, 26px)" }}>Storytelling Designer</h3>
-</div>
+        {/* Top Left Text */}
+        <div 
+          className="absolute text-white leading-[0.9] text-right"
+          style={{ 
+            top: `${pos.topLeftTop}px`, 
+            left: `${pos.topLeftLeft}px`,
+            zIndex: 20 
+          }}
+        >
+          <h3 className="font-medium" style={{ fontSize: `${pos.topLeftSize}px` }}>UI/UX & Visual</h3>
+          <h3 className="font-medium" style={{ fontSize: `${pos.topLeftSize * 0.9}px` }}>Storytelling Designer</h3>
+        </div>
 
-{/* CINEMATIC */}
-<h1
-  className="absolute left-1/2 -translate-x-1/2 text-white uppercase whitespace-nowrap font-normal tracking-[0.01em] leading-[0.8]"
-  style={{ 
-    top: "clamp(100px, 18vh, 180px)",
-    fontSize: "clamp(80px, 12vw, 200px)", 
-    fontFamily: "Anton, sans-serif" 
-  }}
->
-  CINEMATIC
-</h1>
+        {/* CINEMATIC */}
+        <h1
+          className="absolute left-1/2 -translate-x-1/2 text-white uppercase whitespace-nowrap font-normal tracking-[0.01em] leading-[0.8]"
+          style={{ 
+            top: `${pos.cinematicTop}px`,
+            fontSize: `${pos.cinematicSize}px`, 
+            fontFamily: "Anton, sans-serif" 
+          }}
+        >
+          CINEMATIC
+        </h1>
 
-{/* KINETIC */}
-<h1
-  className="absolute left-1/2 -translate-x-1/2 text-white uppercase whitespace-nowrap font-normal tracking-[-0.02em] leading-none"
-  style={{ 
-    top: "clamp(210px, 38vh, 360px)", /* Slight tweak for tighter connection */
-    fontSize: "clamp(80px, 12vw, 200px)", 
-    fontFamily: "Anton, sans-serif" 
-  }}
->
-  KINETIC
-</h1>
+        {/* KINETIC */}
+        <h1
+          className="absolute left-1/2 -translate-x-1/2 text-white uppercase whitespace-nowrap font-normal tracking-[-0.02em] leading-none"
+          style={{ 
+            top: `${pos.kineticTop}px`,
+            fontSize: `${pos.kineticSize}px`, 
+            fontFamily: "Anton, sans-serif" 
+          }}
+        >
+          KINETIC
+        </h1>
 
-{/* Top Right Text */}
-<div 
-  className="absolute text-white leading-[0.9]"
-  style={{ 
-    top: "clamp(220px, 40vh, 380px)", 
-    right: "clamp(16px, 3vw, 48px)",
-    zIndex: 20 
-  }}
->
-  <h3 className="font-medium" style={{ fontSize: "clamp(18px, 1.9vw, 30px)" }}>Creative</h3>
-  <h3 className="font-medium" style={{ fontSize: "clamp(18px, 1.9vw, 30px)" }}>Direction</h3>
-</div>
+        {/* Top Right Text */}
+        <div 
+          className="absolute text-white leading-[0.9]"
+          style={{ 
+            top: `${pos.topRightTop}px`, 
+            right: `${pos.topRightRight}px`,
+            zIndex: 20 
+          }}
+        >
+          <h3 className="font-medium" style={{ fontSize: `${pos.topRightSize}px` }}>Creative</h3>
+          <h3 className="font-medium" style={{ fontSize: `${pos.topRightSize}px` }}>Direction</h3>
+        </div>
 
-{/* TYPOGRAPHY DESIGN (FIXED: Uses predictable top clamp sequencing to close the gap) */}
-<h1
-  className="absolute left-1/2 -translate-x-1/2 text-white uppercase whitespace-nowrap font-normal tracking-[-0.02em] leading-[1.2]"
-  style={{ 
-    top: "clamp(340px, 58vh, 560px)", /* Fixed from bottom to sequential top flow */
-    fontSize: "clamp(60px, 10vw, 160px)", 
-    fontFamily: "Anton, sans-serif" 
-  }}
->
-  TYPOGRAPHY DESIGN
-</h1>
-</div>
+        {/* TYPOGRAPHY DESIGN */}
+        <h1
+          className="absolute left-1/2 -translate-x-1/2 text-white uppercase whitespace-nowrap font-normal tracking-[-0.02em] leading-[1.2]"
+          style={{ 
+            top: `${pos.typographyTop}px`,
+            fontSize: `${pos.typographySize}px`, 
+            fontFamily: "Anton, sans-serif" 
+          }}
+        >
+          TYPOGRAPHY DESIGN
+        </h1>
+      </div>
 
       {/* ========================================================================= */}
       {/* 📱 MOBILE (below 768px) - CLEAN STATIC LAYOUT                           */}

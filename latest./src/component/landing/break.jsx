@@ -5,52 +5,115 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const projects = [
-  { id: "01", title: "F2H (FRAMERS TO HOME)", link: "https://www.behance.net/gallery/205743689/F2H-Grocery-app-UXUI-Case-Study", offset: 0 },
-  { id: "02", title: "BEE BIKES", link: "https://www.behance.net/gallery/208456359/Bee-Bikes-Rental-app-UIUX-Case-study", offset: 40 },
-  { id: "03", title: "ARROW", link: "https://www.behance.net/gallery/207642971/ARROW-Trading-app-UIUX-Case-study", offset: 80 },
-  { id: "04", title: "LENSKART (REDESIGN)", link: "https://www.behance.net/gallery/209999779/Lenskart-Responsive-app-UIUX-Case-study", offset: 0 },
-  { id: "05", title: "PIXLA LOGO", link: "https://www.behance.net/gallery/235401845/Pixla-Group-logo-design", offset: 50 },
-  { id: "06", title: "HEALTH CARE LOGO", link: "https://www.behance.net/gallery/244700761/Logos-Marks-Collections", offset: 20 }
+  {
+    id: "01",
+    title: "F2H (FRAMERS TO HOME)",
+    link: "https://www.behance.net/gallery/205743689/F2H-Grocery-app-UXUI-Case-Study",
+    offset: 0
+  },
+  {
+    id: "02",
+    title: "BEE BIKES",
+    link: "https://www.behance.net/gallery/208456359/Bee-Bikes-Rental-app-UIUX-Case-study",
+    offset: 40
+  },
+  {
+    id: "03",
+    title: "ARROW",
+    link: "https://www.behance.net/gallery/207642971/ARROW-Trading-app-UIUX-Case-study",
+    offset: 80
+  },
+  {
+    id: "04",
+    title: "LENSKART (REDESIGN)",
+    link: "https://www.behance.net/gallery/209999779/Lenskart-Responsive-app-UIUX-Case-study",
+    offset: 0
+  },
+  {
+    id: "05",
+    title: "PIXLA LOGO",
+    link: "https://www.behance.net/gallery/235401845/Pixla-Group-logo-design",
+    offset: 50
+  },
+  {
+    id: "06",
+    title: "HEALTH CARE LOGO",
+    link: "https://www.behance.net/gallery/244700761/Logos-Marks-Collections",
+    offset: 20
+  }
 ];
 
 const BreakSection = () => {
   const containerRef = useRef(null);
 
   useEffect(() => {
-    // MOBILE ONLY: Simple fade-in animation
-    if (window.innerWidth > 768) return;
-
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 75%",
-          toggleActions: "play none none none"
-        }
-      });
 
-      tl.fromTo(".animate-mobile-title",
-        { y: 40, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" }
-      );
-
-      tl.fromTo(".animate-mobile-meta",
-        { opacity: 0 },
-        { opacity: 1, duration: 0.4 },
-        "-=0.2"
-      );
-
-      tl.fromTo(".animate-mobile-item",
-        { y: 30, opacity: 0 },
+      // =========================
+      // TITLE ANIMATION
+      // =========================
+      gsap.fromTo(
+        ".break-title",
+        {
+          y: 120,
+          opacity: 0
+        },
         {
           y: 0,
           opacity: 1,
-          duration: 0.5,
-          stagger: 0.15,
-          ease: "power2.out"
-        },
-        "-=0.1"
+          duration: 1.2,
+          ease: "power4.out",
+          scrollTrigger: {
+            trigger: ".break-title",
+            start: "top 85%"
+          }
+        }
       );
+
+      // =========================
+      // META ANIMATION
+      // =========================
+      gsap.fromTo(
+        ".break-meta",
+        {
+          opacity: 0,
+          y: 20
+        },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          stagger: 0.15,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: ".break-meta-wrap",
+            start: "top 90%"
+          }
+        }
+      );
+
+      // =========================
+      // PROJECT ITEMS
+      // =========================
+      gsap.fromTo(
+        ".project-item",
+        {
+          opacity: 0,
+          y: 80
+        },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          stagger: 0.12,
+          ease: "power4.out",
+          scrollTrigger: {
+            trigger: ".projects-wrap",
+            start: "top 85%"
+          }
+        }
+      );
+
     }, containerRef);
 
     return () => ctx.revert();
@@ -59,32 +122,72 @@ const BreakSection = () => {
   return (
     <section
       ref={containerRef}
-      className="w-full bg-black px-4 sm:px-6 md:px-12 lg:px-16 py-12 md:py-20 overflow-hidden"
+      className="
+        w-full
+        bg-black
+        overflow-hidden
+        px-4
+        sm:px-6
+        md:px-10
+        lg:px-16
+        py-14
+        md:py-24
+      "
     >
 
-      {/* ========================================== */}
-      {/* TITLE - Same on all screens                */}
-      {/* ========================================== */}
+      {/* ========================= */}
+      {/* TITLE */}
+      {/* ========================= */}
       <h2
-        className="animate-mobile-title text-white uppercase text-center mb-6 md:mb-8"
+        className="
+          break-title
+          text-white
+          uppercase
+          text-center
+          leading-[100%]
+        "
         style={{
           fontFamily: "Anton, sans-serif",
-          fontSize: "clamp(48px, 12vw, 180px)",
+          fontSize: "clamp(52px, 14vw, 190px)",
           fontWeight: 400,
-          lineHeight: "100%",
           letterSpacing: "0.01em"
         }}
       >
         BREAK
       </h2>
 
+      {/* ========================= */}
       {/* DIVIDER */}
-      <div className="animate-mobile-meta w-full h-[1px] bg-white/20 mb-6 md:mb-8" />
+      {/* ========================= */}
+      <div className="w-full h-[1px] bg-white/20 mt-8 md:mt-10" />
 
+      {/* ========================= */}
       {/* FILTER ROW */}
-      <div className="animate-mobile-meta flex flex-col md:flex-row justify-between items-center gap-3 mb-10 md:mb-12">
+      {/* ========================= */}
+      <div
+        className="
+          break-meta-wrap
+          flex
+          flex-col
+          md:flex-row
+          items-center
+          justify-between
+          gap-4
+          mt-6
+          md:mt-8
+          mb-12
+          md:mb-16
+        "
+      >
+
         <span
-          className="text-white/60 uppercase text-center md:text-left"
+          className="
+            break-meta
+            text-white/60
+            uppercase
+            text-center
+            md:text-left
+          "
           style={{
             fontFamily: "Inter, sans-serif",
             fontSize: "clamp(9px, 1vw, 11px)",
@@ -96,11 +199,19 @@ const BreakSection = () => {
         </span>
 
         <span
-          className="px-3 py-1 bg-white text-black rounded-full uppercase text-center"
+          className="
+            break-meta
+            px-4
+            py-1.5
+            bg-white
+            text-black
+            rounded-full
+            uppercase
+          "
           style={{
             fontFamily: "Inter, sans-serif",
             fontSize: "clamp(8px, 0.9vw, 10px)",
-            fontWeight: 500,
+            fontWeight: 600,
             letterSpacing: "0.05em"
           }}
         >
@@ -108,26 +219,47 @@ const BreakSection = () => {
         </span>
       </div>
 
-      {/* ========================================== */}
-      {/* DESKTOP - Centered staggered layout        */}
-      {/* ========================================== */}
-      <div className="hidden md:flex flex-col items-center w-full max-w-[900px] mx-auto">
+      {/* ========================= */}
+      {/* DESKTOP */}
+      {/* ========================= */}
+      <div
+        className="
+          projects-wrap
+          hidden
+          md:flex
+          flex-col
+          items-center
+          w-full
+          max-w-[1100px]
+          mx-auto
+        "
+      >
         {projects.map((project) => (
           <div
-            key={`desktop-${project.id}`}
-            className="flex items-baseline gap-3 py-3 transition-colors duration-300 cursor-pointer hover:opacity-60 w-full"
-            style={{ 
-              paddingLeft: `${project.offset}px`,
-              justifyContent: "center"
+            key={project.id}
+            className="
+              project-item
+              w-full
+              flex
+              items-baseline
+              justify-center
+              gap-4
+              py-4
+              transition-all
+              duration-300
+              hover:opacity-60
+            "
+            style={{
+              paddingLeft: `${project.offset}px`
             }}
           >
+
             <span
               className="text-white shrink-0"
               style={{
                 fontFamily: "Inter, sans-serif",
-                fontSize: "clamp(20px, 2vw, 29px)",
+                fontSize: "clamp(18px, 2vw, 30px)",
                 fontWeight: 900,
-                lineHeight: "100%",
                 minWidth: "40px"
               }}
             >
@@ -138,12 +270,11 @@ const BreakSection = () => {
               href={project.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-white uppercase hover:underline"
+              className="text-white uppercase leading-[110%]"
               style={{
                 fontFamily: "Anton, sans-serif",
-                fontSize: "clamp(24px, 5vw, 56px)",
+                fontSize: "clamp(28px, 5vw, 64px)",
                 fontWeight: 400,
-                lineHeight: "110%",
                 letterSpacing: "0.02em"
               }}
             >
@@ -153,23 +284,48 @@ const BreakSection = () => {
         ))}
       </div>
 
-      {/* ========================================== */}
-      {/* MOBILE - Clean centered list               */}
-      {/* ========================================== */}
-      <div className="flex md:hidden flex-col items-center gap-0 w-full max-w-[500px] mx-auto">
+      {/* ========================= */}
+      {/* MOBILE */}
+      {/* ========================= */}
+      <div
+        className="
+          projects-wrap
+          flex
+          md:hidden
+          flex-col
+          items-center
+          w-full
+          max-w-[420px]
+          mx-auto
+        "
+      >
         {projects.map((project) => (
           <div
-            key={`mobile-${project.id}`}
-            className="animate-mobile-item flex items-center justify-center gap-3 py-3 w-full text-center border-b border-white/10 last:border-none"
+            key={project.id}
+            className="
+              project-item
+              w-full
+              flex
+              items-center
+              justify-center
+              gap-3
+              py-5
+              border-b
+              border-white/10
+              last:border-none
+            "
           >
+
             <span
-              className="text-white shrink-0"
+              className="
+                text-white
+                shrink-0
+              "
               style={{
                 fontFamily: "Inter, sans-serif",
-                fontSize: "16px",
-                fontWeight: 800,
-                lineHeight: "100%",
-                minWidth: "32px"
+                fontSize: "15px",
+                fontWeight: 900,
+                minWidth: "28px"
               }}
             >
               {project.id}
@@ -179,17 +335,23 @@ const BreakSection = () => {
               href={project.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-white uppercase"
+              className="
+                text-white
+                uppercase
+                text-center
+                leading-[115%]
+                break-words
+              "
               style={{
                 fontFamily: "Anton, sans-serif",
-                fontSize: "clamp(18px, 5vw, 24px)",
+                fontSize: "clamp(20px, 6vw, 30px)",
                 fontWeight: 400,
-                lineHeight: "120%",
                 letterSpacing: "0.01em"
               }}
             >
               {project.title}
             </a>
+
           </div>
         ))}
       </div>
