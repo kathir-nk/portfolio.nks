@@ -1,8 +1,39 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
+import emailjs from '@emailjs/browser'; 
 
 const Footer = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [messageText, setMessageText] = useState('');
+  const [status, setStatus] = useState(''); // 'sending...', 'success', 'error'
+  const formRef = useRef();
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Email.js Submit Handler
+  const sendEmail = (e) => {
+    e.preventDefault();
+    setStatus('sending...');
+
+    // 🛠️ Unga EmailJS credentials pacha-va inject panniyaachu da
+    emailjs.sendForm(
+      'service_higjgd8', 
+      'template_2meb85i', 
+      formRef.current, 
+      '3swp4kt98wKTTcCPt'
+    )
+    .then((result) => {
+        setStatus('success');
+        setMessageText(''); // Reset text field after success
+        setTimeout(() => {
+          setIsModalOpen(false);
+          setStatus('');
+        }, 2000);
+    }, (error) => {
+        setStatus('error');
+        console.error(error.text);
+    });
   };
 
   return (
@@ -49,15 +80,16 @@ const Footer = () => {
 
             <div className="h-3 md:h-4" />
 
-            <a
-  href="mailto:somanathan@gmail.com?subject=Project%20Inquiry"
-  className="text-base md:text-xl lg:text-2xl font-medium text-black hover:opacity-60"
->
-  EMAIL
-</a>
+            {/* Email link triggers modal setup */}
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="text-base md:text-xl lg:text-2xl font-medium text-black hover:opacity-60 text-left"
+            >
+              EMAIL
+            </button>
           </div>
 
-          {/* RIGHT NAV LINKS (FIXED CLICK BEHAVIOR) */}
+          {/* RIGHT NAV LINKS */}
           <div className="flex flex-col items-end">
             <a href="/" className="text-base md:text-xl lg:text-2xl font-medium text-black hover:opacity-60">
               HOME
@@ -112,6 +144,98 @@ const Footer = () => {
           </div>
         </div>
       </div>
+
+      {/* ========================================================================= */}
+      {/* 🪟 CONTACT MODAL POPUP (Screenshot Pixel Match)                           */}
+      {/* ========================================================================= */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          
+          {/* Modal Container Body */}
+          <div className="bg-white w-full max-w-[550px] p-8 md:p-12 relative rounded-sm shadow-2xl flex flex-col justify-between min-h-[580px]">
+            
+            {/* CLOSE BUTTON (X) */}
+            <button 
+              onClick={() => setIsModalOpen(false)}
+              className="absolute top-6 right-6 text-black font-light text-2xl hover:opacity-60 transition-opacity"
+            >
+              ✕
+            </button>
+
+            {/* FORM CONTAINER */}
+            <form ref={formRef} onSubmit={sendEmail} className="w-full flex-1 flex flex-col justify-between">
+              
+              {/* TOP HEADER TITLE */}
+              <div className="mb-4">
+                <h2 
+                  className="text-black font-medium tracking-tight leading-[110%]"
+                  style={{
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: "clamp(36px, 8vw, 52px)",
+                  }}
+                >
+                  Let’s start a<br />conversation
+                </h2>
+              </div>
+
+              {/* INPUT FIELDS STACK (Screenshot Exact UI Layout) */}
+              <div className="flex flex-col gap-5 flex-1 justify-center">
+                
+                {/* 🔒 Email Label (Not Input anymore - Static Text View) */}
+                <div 
+                  className="w-full text-neutral-400 font-normal py-2 select-all"
+                  style={{ fontFamily: "Inter, sans-serif", fontSize: "18px" }}
+                >
+                  somusomanathan1074@gmail.com
+                </div>
+
+                {/* 🔒 Phone Label (Not Input anymore - Static Text View) */}
+                <div 
+                  className="w-full text-neutral-400 font-normal py-2 select-all"
+                  style={{ fontFamily: "Inter, sans-serif", fontSize: "18px" }}
+                >
+                  8270710850
+                </div>
+
+                {/* 🔓 Message Input Field (The only editable area da) */}
+                <input 
+                  type="text"
+                  name="message"
+                  value={messageText}
+                  onChange={(e) => setMessageText(e.target.value)}
+                  placeholder="Message"
+                  required
+                  autoFocus
+                  className="w-full text-black placeholder-neutral-300 font-normal py-2 focus:outline-none border-b border-neutral-200 focus:border-black transition-colors"
+                  style={{ fontFamily: "Inter, sans-serif", fontSize: "18px" }}
+                />
+
+              </div>
+
+              {/* SUBMIT ROW */}
+              <div className="mt-8 pt-4 relative">
+                
+                {/* Status Notice Tooltip */}
+                {status === 'sending...' && <p className="text-xs text-yellow-600 font-medium mb-1 animate-pulse">Sending message...</p>}
+                {status === 'success' && <p className="text-xs text-green-600 font-medium mb-1">✓ Message sent successfully da!</p>}
+                {status === 'error' && <p className="text-xs text-red-600 font-medium mb-1">✕ Failed to send. Try again.</p>}
+
+                <button 
+                  type="submit"
+                  disabled={status === 'sending...'}
+                  className="w-full text-left text-black font-medium text-xl py-3 border-b-2 border-black tracking-tight flex justify-between items-center hover:opacity-70 transition-opacity disabled:opacity-50"
+                  style={{ fontFamily: "Inter, sans-serif" }}
+                >
+                  <span>Send</span>
+                  <span className="text-sm font-light">→</span>
+                </button>
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+      )}
 
       <style>{`
         .marquee-container {

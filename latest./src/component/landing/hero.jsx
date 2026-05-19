@@ -214,7 +214,7 @@ export default function Hero() {
         <div className="flex md:hidden flex-col items-center gap-6 w-full mt-2 px-4">
           
           {/* LINE 2: STATIC VIDEO BOX */}
-          <div className="relative overflow-hidden shadow-2xl  w-[280px] h-[360px]">
+          <div className="relative overflow-hidden shadow-2xl  w-[340px] h-[320px]">
             <div className="absolute inset-0 bg-black/10 z-10 pointer-events-none" />
             <video autoPlay muted loop playsInline className="h-full w-full object-cover" style={{ filter: "contrast(1.1) saturate(1.2)" }}>
               <source src={heroVideo} type="video/mp4" />
@@ -223,10 +223,10 @@ export default function Hero() {
 
           {/* LINE 3: 2-LINE STATIC TEXT */}
           <div className="flex flex-col items-center gap-1 text-center w-full">
-            <h2 className="font-black uppercase leading-none tracking-tighter text-[28px] text-black">
+            <h2 className="font-black uppercase leading-none tracking-none text-[28px] text-black">
               A VISUAL
             </h2>
-            <h2 className="font-black uppercase leading-none tracking-tighter text-[28px] text-black">
+            <h2 className="font-black uppercase leading-none tracking-none text-[28px] text-black">
               DESIGNER
             </h2>
           </div>

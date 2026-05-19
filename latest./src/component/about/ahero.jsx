@@ -11,7 +11,7 @@ const AboutSection = () => {
       {/* ========================================================================= */}
       {/* 📱 MOBILE VIEW */}
       {/* ========================================================================= */}
-      <div className="block md:hidden bg-black w-full pt-20">
+      <div className="block md:hidden bg-black w-full pt-28">
 
         <div className="px-6 pt-12 pb-10 flex flex-col items-center">
           <h2
@@ -82,7 +82,8 @@ const AboutSection = () => {
       {/* ========================================================================= */}
       <div className="hidden md:block w-full relative">
 
-        <div className="bg-black px-6 md:px-12 lg:px-16 pt-12 md:pt-16 pb-48 md:pb-64 lg:pb-80 flex flex-col items-center">
+        {/* ✅ ONLY GAP FIXED HERE */}
+        <div className="bg-black px-6 md:px-12 lg:px-16 pt-28 md:pt-36 lg:pt-30 pb-90 flex flex-col items-center">
           <h2
             className="text-white uppercase text-center w-full"
             style={{
@@ -97,6 +98,7 @@ const AboutSection = () => {
           </h2>
         </div>
 
+        {/* IMAGE FLOAT (UNCHANGED) */}
         <div
           className="absolute left-1/2 transform -translate-x-1/2"
           style={{
@@ -125,6 +127,7 @@ const AboutSection = () => {
           </div>
         </div>
 
+        {/* BUTTONS (UNCHANGED) */}
         <div className="bg-white px-6 md:px-12 lg:px-16 pt-48 md:pt-64 lg:pt-80 pb-12 md:pb-16">
           <div className="flex justify-center gap-4 md:gap-6">
 

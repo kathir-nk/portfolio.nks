@@ -151,7 +151,7 @@ const BreakSection = () => {
             className="animate-mobile-item flex items-center justify-center gap-3 py-2 w-full text-center border-b border-white/5 last:border-none"
           >
             <span
-              className="text-white shrink-0 italic"
+              className="text-white shrink-0 normal-case"
               style={{
                 fontFamily: "Inter, sans-serif",
                 fontSize: "18px",
