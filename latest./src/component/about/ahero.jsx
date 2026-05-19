@@ -82,8 +82,8 @@ const AboutSection = () => {
       {/* ========================================================================= */}
       <div className="hidden md:block w-full relative">
 
-        {/* ✅ ONLY GAP FIXED HERE */}
-        <div className="bg-black px-6 md:px-12 lg:px-16 pt-28 md:pt-36 lg:pt-30 pb-90 flex flex-col items-center">
+        {/* HEADER */}
+        <div className="bg-black px-6 md:px-12 lg:px-16 pt-28 md:pt-36 lg:pt-40 pb-92 flex flex-col items-center">
           <h2
             className="text-white uppercase text-center w-full"
             style={{
