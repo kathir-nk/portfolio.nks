@@ -16,26 +16,16 @@ export default function Hero() {
   const scrollDownRef = useRef(null);
   const floatingTweenRef = useRef(null);
 
-  // 🔥 SAFE TEXT MOVEMENT
   const getSafeX = () => {
     if (typeof window === "undefined") return 60;
-
     const calculated = window.innerWidth * 0.12;
-
     return Math.min(calculated, 180);
   };
 
-  // 🔥 SAFE VIDEO SIZE
   const getVideoSize = () => {
-    if (typeof window === "undefined") {
-      return { width: 520, height: 320 };
-    }
-
+    if (typeof window === "undefined") return { width: 520, height: 320 };
     const vw = window.innerWidth;
-
-    let width;
-    let height;
-
+    let width, height;
     if (vw < 1024) {
       width = Math.min(vw * 0.42, 420);
       height = width * 0.62;
@@ -46,50 +36,39 @@ export default function Hero() {
       width = Math.min(vw * 0.34, 640);
       height = width * 0.62;
     }
-
     width = Math.max(width, 320);
     height = Math.max(height, 220);
-
     return { width, height };
   };
 
   const getSafeYPhase1 = () => {
     if (typeof window === "undefined") return 0;
-
     return Math.min(window.innerHeight * 0.18, 140);
   };
 
   const getSafeYPhase2 = () => {
     if (typeof window === "undefined") return 0;
-
     return window.innerHeight * 0.10;
   };
 
   useEffect(() => {
     const isDesktop = window.innerWidth > 768;
-
     if (!isDesktop) return;
 
     const initTimer = setTimeout(() => {
-
       const ctx = gsap.context(() => {
 
-        // ==========================================
-        // VIDEO SIZE SET
-        // ==========================================
         const updateVideoSize = () => {
           const size = getVideoSize();
-
           gsap.set(videoWrapRef.current, {
             width: size.width,
             height: size.height
           });
         };
-
         updateVideoSize();
 
         // ==========================================
-        // ENTRANCE
+        // ENTRANCE ANIMATIONS
         // ==========================================
         const entranceTl = gsap.timeline();
 
@@ -141,9 +120,6 @@ export default function Hero() {
           ease: "power2.out"
         }, 1);
 
-        // ==========================================
-        // FLOATING
-        // ==========================================
         floatingTweenRef.current = gsap.to(videoWrapRef.current, {
           y: "+=14",
           duration: 3,
@@ -153,7 +129,8 @@ export default function Hero() {
         });
 
         // ==========================================
-        // SCROLL TIMELINE
+        // SCROLL TIMELINE - fromTo() for ALL elements
+        // This ensures perfect reset on scroll up/down
         // ==========================================
         const scrollTl = gsap.timeline({
           scrollTrigger: {
@@ -167,131 +144,100 @@ export default function Hero() {
 
             onRefresh: () => {
               updateVideoSize();
-            },
-
-            onLeaveBack: () => {
-
-              const size = getVideoSize();
-
-              gsap.to(videoWrapRef.current, {
-                width: size.width,
-                height: size.height,
-                scale: 1,
-                y: 0,
-                duration: 0.3
-              });
-
-              gsap.to(titleRef.current, {
-                opacity: 1,
-                y: 0,
-                duration: 0.3
-              });
-
-              gsap.to(labelRowRef.current, {
-                opacity: 1,
-                duration: 0.3
-              });
-
-              gsap.to(leftTextRef.current, {
-                x: 0,
-                opacity: 1,
-                duration: 0.3
-              });
-
-              gsap.to(rightTextRef.current, {
-                x: 0,
-                opacity: 1,
-                duration: 0.3
-              });
-
-              gsap.to(scrollDownRef.current, {
-                opacity: 1,
-                y: 0,
-                duration: 0.3
-              });
-
-              if (floatingTweenRef.current) {
-                floatingTweenRef.current.resume();
-              }
             }
           }
         });
 
-        // ==========================================
-        // 🔥 TEXT MOVE TO CENTER
-        // ==========================================
-        scrollTl.to(leftTextRef.current, {
-          x: getSafeX(),
-          ease: "none"
-        }, 0);
+        const size = getVideoSize();
+        const safeX = getSafeX();
+        const safeY1 = getSafeYPhase1();
+        const safeY2 = getSafeYPhase2();
 
-        scrollTl.to(rightTextRef.current, {
-          x: -getSafeX(),
-          ease: "none"
-        }, 0);
+        // 🔥 LEFT TEXT: from center → spread right
+        scrollTl.fromTo(
+          leftTextRef.current,
+          { x: 0, opacity: 1 },
+          { x: safeX, opacity: 1, ease: "none" },
+          0
+        );
 
-        // ==========================================
-        // 🔥 VIDEO MOVE DOWN
-        // ==========================================
-        scrollTl.to(videoWrapRef.current, {
-          y: getSafeYPhase1(),
-          ease: "none"
-        }, 0);
+        // 🔥 RIGHT TEXT: from center → spread left
+        scrollTl.fromTo(
+          rightTextRef.current,
+          { x: 0, opacity: 1 },
+          { x: -safeX, opacity: 1, ease: "none" },
+          0
+        );
 
-        // ==========================================
-        // TITLE FADE
-        // ==========================================
-        scrollTl.to(titleRef.current, {
-          opacity: 0.15,
-          y: -30,
-          ease: "none"
-        }, 0);
+        // 🔥 VIDEO: from center → moves down + grows
+        scrollTl.fromTo(
+          videoWrapRef.current,
+          { y: 0, width: size.width, height: size.height, scale: 1 },
+          { y: safeY1, ease: "none" },
+          0
+        );
 
-        scrollTl.to(labelRowRef.current, {
-          opacity: 0.3,
-          ease: "none"
-        }, 0);
+        // 🔥 TITLE: from visible → fades
+        scrollTl.fromTo(
+          titleRef.current,
+          { opacity: 1, y: 0 },
+          { opacity: 0.15, y: -30, ease: "none" },
+          0
+        );
 
-        scrollTl.to(scrollDownRef.current, {
-          opacity: 0,
-          y: 20,
-          ease: "power2.in"
-        }, 0);
+        // 🔥 LABEL: from visible → fades
+        scrollTl.fromTo(
+          labelRowRef.current,
+          { opacity: 1 },
+          { opacity: 0.3, ease: "none" },
+          0
+        );
 
-        // ==========================================
-        // 🔥 CENTER TEXT SHOW
-        // ==========================================
-        scrollTl.to([leftTextRef.current, rightTextRef.current], {
-          opacity: 1,
-          scale: 1.05,
-          ease: "power2.out"
-        }, 0.35);
-
-        // ==========================================
-        // VIDEO EXPAND
-        // ==========================================
-        const expandedSize = getVideoSize();
-
-        scrollTl.to(videoWrapRef.current, {
-          width: expandedSize.width * 1.6,
-          height: expandedSize.height * 1.5,
-          scale: 1.15,
-          y: getSafeYPhase1() + getSafeYPhase2(),
-          ease: "none"
-        }, 0.45);
+        // 🔥 SCROLL DOWN: from visible → hides
+        scrollTl.fromTo(
+          scrollDownRef.current,
+          { opacity: 1, y: 0 },
+          { opacity: 0, y: 20, ease: "power2.in" },
+          0
+        );
 
         // ==========================================
-        // TEXT FADE LITTLE
+        // PHASE 2: Video grows BIG
         // ==========================================
-        scrollTl.to([leftTextRef.current, rightTextRef.current], {
-          opacity: 0.12,
-          ease: "power2.in"
-        }, 0.55);
+        scrollTl.fromTo(
+          videoWrapRef.current,
+          { width: size.width, height: size.height, scale: 1 },
+          {
+            width: size.width * 1.6,
+            height: size.height * 1.5,
+            scale: 1.15,
+            ease: "none"
+          },
+          0.45
+        );
 
-        scrollTl.to([titleRef.current, labelRowRef.current], {
-          opacity: 0,
-          ease: "power2.in"
-        }, 0.55);
+        // Video moves further down
+        scrollTl.fromTo(
+          videoWrapRef.current,
+          { y: safeY1 },
+          { y: safeY1 + safeY2, ease: "none" },
+          0.45
+        );
+
+        // Text fades behind video
+        scrollTl.fromTo(
+          [leftTextRef.current, rightTextRef.current],
+          { opacity: 1 },
+          { opacity: 0.12, ease: "power2.in" },
+          0.55
+        );
+
+        scrollTl.fromTo(
+          [titleRef.current, labelRowRef.current],
+          { opacity: 0.15 },
+          { opacity: 0, ease: "power2.in" },
+          0.55
+        );
 
       }, heroRef);
 
@@ -301,7 +247,6 @@ export default function Hero() {
 
     return () => {
       clearTimeout(initTimer);
-
       ScrollTrigger.getAll().forEach((t) => t.kill());
     };
 
@@ -388,7 +333,7 @@ export default function Hero() {
             style={{ minHeight: "320px" }}
           >
 
-            {/* TEXT */}
+            {/* TEXT LAYER */}
             <div
               className="absolute inset-0 flex items-center justify-center"
               style={{ zIndex: 10 }}
@@ -437,7 +382,7 @@ export default function Hero() {
               </div>
             </div>
 
-            {/* VIDEO */}
+            {/* VIDEO LAYER */}
             <div
               className="absolute inset-0 flex items-center justify-center"
               style={{
@@ -473,7 +418,7 @@ export default function Hero() {
 
           </div>
 
-          {/* SCROLL */}
+          {/* SCROLL DOWN */}
           <div
             ref={scrollDownRef}
             className="absolute hidden md:block"
