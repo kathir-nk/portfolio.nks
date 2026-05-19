@@ -1,5 +1,3 @@
-// ServiceShowcase.jsx
-
 import { useState } from "react";
 
 const services = [
@@ -16,102 +14,103 @@ export default function ServiceShowcase() {
   return (
     <section className="w-full overflow-hidden bg-black">
 
-  {/* ================================================================================= */}
-  {/* 💻 DESKTOP VIEW */}
-  {/* ================================================================================= */}
-  <div className="hidden md:flex relative w-full h-screen bg-[#1f1f1f] flex-col justify-center">
+      {/* ================================================================================= */}
+      {/* 💻 DESKTOP VIEW (FIXED RESPONSIVE ALIGNMENT) */}
+      {/* ================================================================================= */}
+      <div className="hidden md:flex relative w-full min-h-screen bg-[#1f1f1f]  flex-col justify-center">
 
-    {services.map((item, index) => (
-      <div
-        key={index}
-        onMouseEnter={() => setActiveIndex(index)}
-        className={`relative w-full flex items-center justify-center transition-all duration-500 ease-in-out cursor-pointer
-        
-        ${
-          activeIndex === index
-            ? "h-[170px] bg-[#4a4a4a]"
-            : "h-[150px]"
-        }
-        `}
-      >
+        {services.map((item, index) => (
+          <div
+            key={index}
+            onMouseEnter={() => setActiveIndex(index)}
+            className={`relative w-full flex items-center justify-center cursor-pointer transition-all duration-500 ease-in-out
 
-        {/* BLUE LINE */}
-        {activeIndex === index && (
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[62%] h-[3px] bg-white" />
-        )}
+              ${
+                activeIndex === index
+                  ? "bg-[#4a4a4a] flex-[1.0]"
+                  : "flex-[1]"
+              }
+            `}
+            style={{
+              minHeight: "90px",
+            }}
+          >
 
-        {/* TEXT */}
-        <h1
-          className={`uppercase font-extrabold tracking-tight text-center leading-none transition-all duration-500
-          
-          ${
-            activeIndex === index
-              ? "text-white opacity-100 scale-100"
-              : "text-[#3a3a3a] opacity-70 scale-95"
-          }
+            {/* ACTIVE LINE */}
+            {activeIndex === index && (
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[65%] h-[3px] bg-white" />
+            )}
 
-          text-[42px]
-          sm:text-[58px]
-          md:text-[80px]
-          lg:text-[120px]
-          xl:text-[150px]
-          `}
-          style={{
-            fontFamily: "Impact, sans-serif",
-          }}
-        >
-          {item}
-        </h1>
+            {/* TEXT */}
+            <h1
+              className={`uppercase font-extrabold tracking-tight text-center leading-none transition-all duration-500
+
+                ${
+                  activeIndex === index
+                    ? "text-white opacity-100 scale-100"
+                    : "text-[#3a3a3a] opacity-70 scale-95"
+                }
+
+                text-[clamp(32px,5vw,110px)]
+              `}
+              style={{
+                fontFamily: "Impact, sans-serif",
+              }}
+            >
+              {item}
+            </h1>
+
+          </div>
+        ))}
+
       </div>
-    ))}
-  </div>
 
-  {/* ================================================================================= */}
-  {/* 📱 MOBILE VIEW */}
-  {/* ================================================================================= */}
-  <div className="flex md:hidden relative w-full bg-[#1f1f1f] flex-col py-2">
+      {/* ================================================================================= */}
+      {/* 📱 MOBILE VIEW (UNCHANGED LOGIC) */}
+      {/* ================================================================================= */}
+      <div className="flex md:hidden relative w-full bg-[#1f1f1f] flex-col py-2">
 
-    {services.map((item, index) => (
-      <div
-        key={index}
-        onClick={() => setActiveIndex(index)}
-        className={`relative w-full flex items-center justify-center cursor-pointer
-        
-        ${
-          activeIndex === index
-            ? "h-[62px] bg-[#4a4a4a]"
-            : "h-[62px]"
-        }
-        `}
-      >
+        {services.map((item, index) => (
+          <div
+            key={index}
+            onClick={() => setActiveIndex(index)}
+            className={`relative w-full flex items-center justify-center cursor-pointer transition-all duration-300
 
-        {/* WHITE LINE */}
-        {activeIndex === index && (
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[82%] h-[2px] bg-white" />
-        )}
+              ${
+                activeIndex === index
+                  ? "h-[62px] bg-[#4a4a4a]"
+                  : "h-[62px]"
+              }
+            `}
+          >
 
-        {/* TEXT */}
-        <h1
-          className={`uppercase font-extrabold tracking-tight text-center leading-none
-          
-          ${
-            activeIndex === index
-              ? "text-white"
-              : "text-[#3a3a3a]"
-          }
+            {activeIndex === index && (
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[82%] h-[2px] bg-white" />
+            )}
 
-          text-[24px]
-          sm:text-[28px]
-          `}
-          style={{
-            fontFamily: "Impact, sans-serif",
-          }}
-        >
-          {item}
-        </h1>
+            <h1
+              className={`uppercase font-extrabold tracking-tight text-center leading-none
+
+                ${
+                  activeIndex === index
+                    ? "text-white"
+                    : "text-[#3a3a3a]"
+                }
+
+                text-[24px] sm:text-[28px]
+              `}
+              style={{
+                fontFamily: "Impact, sans-serif",
+              }}
+            >
+              {item}
+            </h1>
+
+          </div>
+        ))}
+
       </div>
-    ))}
-  </div>
-</section>
+
+    </section>
   );
 }
