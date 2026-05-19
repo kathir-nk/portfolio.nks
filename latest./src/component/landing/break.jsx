@@ -47,10 +47,13 @@ const BreakSection = () => {
   const containerRef = useRef(null);
 
   useEffect(() => {
+    // 🔒 MOBILE: Skip all GSAP animation
+    if (window.innerWidth <= 768) return;
+
     const ctx = gsap.context(() => {
 
       // =========================
-      // TITLE ANIMATION
+      // TITLE ANIMATION (Desktop only)
       // =========================
       gsap.fromTo(
         ".break-title",
@@ -71,7 +74,7 @@ const BreakSection = () => {
       );
 
       // =========================
-      // META ANIMATION
+      // META ANIMATION (Desktop only)
       // =========================
       gsap.fromTo(
         ".break-meta",
@@ -93,10 +96,10 @@ const BreakSection = () => {
       );
 
       // =========================
-      // PROJECT ITEMS
+      // PROJECT ITEMS (Desktop only)
       // =========================
       gsap.fromTo(
-        ".project-item",
+        ".project-item-desktop",
         {
           opacity: 0,
           y: 80
@@ -108,7 +111,7 @@ const BreakSection = () => {
           stagger: 0.12,
           ease: "power4.out",
           scrollTrigger: {
-            trigger: ".projects-wrap",
+            trigger: ".projects-wrap-desktop",
             start: "top 85%"
           }
         }
@@ -122,30 +125,14 @@ const BreakSection = () => {
   return (
     <section
       ref={containerRef}
-      className="
-        w-full
-        bg-black
-        overflow-hidden
-        px-4
-        sm:px-6
-        md:px-10
-        lg:px-16
-        py-14
-        md:py-24
-      "
+      className="w-full bg-black overflow-hidden px-4 sm:px-6 md:px-10 lg:px-16 py-14 md:py-24"
     >
 
       {/* ========================= */}
       {/* TITLE */}
       {/* ========================= */}
       <h2
-        className="
-          break-title
-          text-white
-          uppercase
-          text-center
-          leading-[100%]
-        "
+        className="break-title text-white uppercase text-center leading-[100%]"
         style={{
           fontFamily: "Anton, sans-serif",
           fontSize: "clamp(52px, 14vw, 190px)",
@@ -164,30 +151,10 @@ const BreakSection = () => {
       {/* ========================= */}
       {/* FILTER ROW */}
       {/* ========================= */}
-      <div
-        className="
-          break-meta-wrap
-          flex
-          flex-col
-          md:flex-row
-          items-center
-          justify-between
-          gap-4
-          mt-6
-          md:mt-8
-          mb-12
-          md:mb-16
-        "
-      >
+      <div className="break-meta-wrap flex flex-col md:flex-row items-center justify-between gap-4 mt-6 md:mt-8 mb-12 md:mb-16">
 
         <span
-          className="
-            break-meta
-            text-white/60
-            uppercase
-            text-center
-            md:text-left
-          "
+          className="break-meta text-white/60 uppercase text-center md:text-left"
           style={{
             fontFamily: "Inter, sans-serif",
             fontSize: "clamp(9px, 1vw, 11px)",
@@ -199,15 +166,7 @@ const BreakSection = () => {
         </span>
 
         <span
-          className="
-            break-meta
-            px-4
-            py-1.5
-            bg-white
-            text-black
-            rounded-full
-            uppercase
-          "
+          className="break-meta px-4 py-1.5 bg-white text-black rounded-full uppercase"
           style={{
             fontFamily: "Inter, sans-serif",
             fontSize: "clamp(8px, 0.9vw, 10px)",
@@ -220,40 +179,15 @@ const BreakSection = () => {
       </div>
 
       {/* ========================= */}
-      {/* DESKTOP */}
+      {/* DESKTOP - Animated */}
       {/* ========================= */}
-      <div
-        className="
-          projects-wrap
-          hidden
-          md:flex
-          flex-col
-          items-center
-          w-full
-          max-w-[1100px]
-          mx-auto
-        "
-      >
+      <div className="projects-wrap-desktop hidden md:flex flex-col items-center w-full max-w-[1100px] mx-auto">
         {projects.map((project) => (
           <div
             key={project.id}
-            className="
-              project-item
-              w-full
-              flex
-              items-baseline
-              justify-center
-              gap-4
-              py-4
-              transition-all
-              duration-300
-              hover:opacity-60
-            "
-            style={{
-              paddingLeft: `${project.offset}px`
-            }}
+            className="project-item-desktop w-full flex items-baseline justify-center gap-4 py-4 transition-all duration-300 hover:opacity-60"
+            style={{ paddingLeft: `${project.offset}px` }}
           >
-
             <span
               className="text-white shrink-0"
               style={{
@@ -285,42 +219,16 @@ const BreakSection = () => {
       </div>
 
       {/* ========================= */}
-      {/* MOBILE */}
+      {/* MOBILE - Static (NO animation) */}
       {/* ========================= */}
-      <div
-        className="
-          projects-wrap
-          flex
-          md:hidden
-          flex-col
-          items-center
-          w-full
-          max-w-[420px]
-          mx-auto
-        "
-      >
+      <div className="flex md:hidden flex-col items-center w-full max-w-[420px] mx-auto">
         {projects.map((project) => (
           <div
             key={project.id}
-            className="
-              project-item
-              w-full
-              flex
-              items-center
-              justify-center
-              gap-3
-              py-5
-              border-b
-              border-white/10
-              last:border-none
-            "
+            className="w-full flex items-center justify-center gap-1 py-5  last:border-none"
           >
-
             <span
-              className="
-                text-white
-                shrink-0
-              "
+              className="text-white shrink-0"
               style={{
                 fontFamily: "Inter, sans-serif",
                 fontSize: "15px",
@@ -335,13 +243,7 @@ const BreakSection = () => {
               href={project.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="
-                text-white
-                uppercase
-                text-center
-                leading-[115%]
-                break-words
-              "
+              className="text-white uppercase text-center leading-[115%] break-words"
               style={{
                 fontFamily: "Anton, sans-serif",
                 fontSize: "clamp(20px, 6vw, 30px)",
@@ -351,7 +253,6 @@ const BreakSection = () => {
             >
               {project.title}
             </a>
-
           </div>
         ))}
       </div>

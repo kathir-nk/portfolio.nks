@@ -128,99 +128,96 @@ const Footer = () => {
 
         <div className="w-full h-[1px] bg-black" />
 
-        {/* LINKS */}
-        <div
-          className="
-            pt-6
-            md:pt-8
-            flex
-            flex-col
-            md:flex-row
-            justify-between
-            items-start
-            gap-10
-            md:gap-0
-          "
-        >
+       {/* LINKS */}
+<div
+  className="
+    pt-6
+    md:pt-8
+    flex
+    justify-between
+    items-start
+    w-full
+  "
+>
 
-          {/* LEFT */}
-          <div className="flex flex-col gap-3">
+  {/* LEFT SIDE */}
+  <div className="flex flex-col gap-3">
 
-            <a
-              className="footer-link"
-              href="https://www.instagram.com/stock_designer_?igsh=cHBnNHA0amdsYWdx"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              INSTAGRAM
-            </a>
+    <a
+      className="footer-link"
+      href="https://www.instagram.com/stock_designer_?igsh=cHBnNHA0amdsYWdx"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      INSTAGRAM
+    </a>
 
-            <a
-              className="footer-link"
-              href="https://www.linkedin.com/in/somanathan-g-840118272/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              LINKEDIN
-            </a>
+    <a
+      className="footer-link"
+      href="https://www.linkedin.com/in/somanathan-g-840118272/"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      LINKEDIN
+    </a>
 
-            <a
-              className="footer-link"
-              href="https://www.behance.net/somugs"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              BEHANCE
-            </a>
+    <a
+      className="footer-link"
+      href="https://www.behance.net/somugs"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      BEHANCE
+    </a>
 
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="footer-link text-left"
-            >
-              EMAIL
-            </button>
+    <button
+      onClick={() => setIsModalOpen(true)}
+      className="footer-link text-left"
+    >
+      EMAIL
+    </button>
 
-          </div>
+  </div>
 
-          {/* RIGHT */}
-          <div
-            className="
-              flex
-              flex-col
-              items-start
-              md:items-end
-              gap-3
-              w-full
-              md:w-auto
-            "
-          >
+  {/* RIGHT SIDE */}
+  <div
+    className="
+      flex
+      flex-col
+      items-end
+      gap-3
+      text-right
+      shrink-0
+    "
+  >
 
-            <Link
-              className="footer-link"
-              to="/"
-              onClick={handleNavClick}
-            >
-              HOME
-            </Link>
+    <Link
+      className="footer-link"
+      to="/"
+      onClick={handleNavClick}
+    >
+      HOME
+    </Link>
 
-            <Link
-              className="footer-link"
-              to="/work"
-              onClick={handleNavClick}
-            >
-              WORKS
-            </Link>
+    <Link
+      className="footer-link"
+      to="/work"
+      onClick={handleNavClick}
+    >
+      WORKS
+    </Link>
 
-            <Link
-              className="footer-link"
-              to="/about"
-              onClick={handleNavClick}
-            >
-              ABOUT
-            </Link>
+    <Link
+      className="footer-link"
+      to="/about"
+      onClick={handleNavClick}
+    >
+      ABOUT
+    </Link>
 
-          </div>
-        </div>
+  </div>
+
+</div>
 
         {/* BACK TO TOP */}
         <div className="mt-8 md:mt-5 flex justify-center">
