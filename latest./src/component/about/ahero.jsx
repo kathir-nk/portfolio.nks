@@ -1,291 +1,159 @@
-import React from "react";
+import React from 'react';
+import aboutImage from './../../assets/l6.png';
 
-import profileImg from "./../../assets/l6.png";
-import figma from "./../../assets/l7.png";
-import photoshop from "./../../assets/l8.png";
-import illustrator from "./../../assets/l9.png";
+const AboutSection = () => {
+  const buttonClass =
+    "w-[160px] h-12 flex items-center justify-center bg-black text-white rounded-full uppercase text-center";
 
-const AboutPage = () => {
   return (
-    <section className="w-full bg-[#e8e6e1] overflow-hidden">
+    <section className="w-full relative">
 
-      {/* ================= HERO ================= */}
-      <div className="relative bg-black px-4 sm:px-6 md:px-12 pt-10 md:pt-16 pb-40 md:pb-56">
+      {/* ========================================================================= */}
+      {/* 📱 MOBILE VIEW */}
+      {/* ========================================================================= */}
+      <div className="block md:hidden bg-black w-full pt-28">
 
-        {/* TITLE */}
-        <div className="flex justify-center">
-
-          <h1
-            className="
-              text-white
-              uppercase
-              text-center
-              leading-[0.9]
-              tracking-[-0.05em]
-            "
+        <div className="px-6 pt-12 pb-10 flex flex-col items-center">
+          <h2
+            className="text-white uppercase text-center w-full"
             style={{
-              fontSize: "clamp(58px, 10vw, 220px)",
               fontFamily: "Anton, sans-serif",
+              fontSize: "clamp(54px, 15vw, 75px)",
+              fontWeight: 400,
+              lineHeight: "95%",
+              letterSpacing: "0.02em"
             }}
           >
-            ABOUT SOMANATHAN
-          </h1>
+            ABOUT<br />SOMANATHAN
+          </h2>
         </div>
 
-        {/* IMAGE SECTION */}
-        <div className="relative z-20 mt-10 md:mt-14 flex justify-center">
+        <div className="px-6 pt-6 pb-12 flex flex-col items-center">
 
-          <div className="relative w-full max-w-[300px] md:max-w-[430px]">
+          <div className="w-full flex justify-between items-center px-1 mb-3">
+            <span className="text-white uppercase font-medium"
+              style={{ fontFamily: "Inter, sans-serif", fontSize: "12px", letterSpacing: "0.1em" }}>
+              WHO'S THIS?
+            </span>
+            <span className="text-white uppercase font-medium"
+              style={{ fontFamily: "Inter, sans-serif", fontSize: "12px", letterSpacing: "0.1em" }}>
+              HELLO, HI, HEY
+            </span>
+          </div>
 
-            {/* TOP LABELS */}
-            <div className="absolute -top-7 left-0 right-0 flex items-center justify-between">
-
-              <p
-                className="
-                  text-white
-                  uppercase
-                  text-[10px]
-                  md:text-[14px]
-                  tracking-wide
-                "
-              >
-                WHO'S THIS?
-              </p>
-
-              <p
-                className="
-                  text-white
-                  uppercase
-                  text-[10px]
-                  md:text-[14px]
-                  tracking-wide
-                "
-              >
-                HELLO, HI, HEY
-              </p>
-            </div>
-
-            {/* IMAGE BOX */}
-            <div
-              className="
-                bg-[#f4f4f4]
-                w-full
-                h-[420px]
-                md:h-[620px]
-                overflow-hidden
-                flex
-                items-end
-                justify-center
-              "
-            >
-              <img
-                src={profileImg}
-                alt=""
-                className="
-                  h-full
-                  object-contain
-                "
-              />
-            </div>
-
-            {/* BUTTONS */}
-            <div className="mt-4 flex items-center justify-center gap-3">
-
-              <button
-                className="
-                  bg-black
-                  text-white
-                  rounded-full
-                  px-4
-                  md:px-5
-                  py-1.5
-                  uppercase
-                  text-[10px]
-                  md:text-[12px]
-                  tracking-wide
-                "
-              >
-                Resume
-              </button>
-
-              <button
-                className="
-                  bg-black
-                  text-white
-                  rounded-full
-                  px-4
-                  md:px-5
-                  py-1.5
-                  uppercase
-                  text-[10px]
-                  md:text-[12px]
-                  tracking-wide
-                "
-              >
-                Linkedin
-              </button>
-            </div>
+          <div
+            className="w-full bg-neutral-900 p-2 shadow-2xl"
+            style={{ height: "clamp(340px, 110vw, 440px)" }}
+          >
+            <img
+              src={aboutImage}
+              alt="Somanathan"
+              className="w-full h-full object-cover"
+            />
           </div>
         </div>
 
-        {/* BOTTOM LIGHT AREA */}
-        <div
-          className="
-            absolute
-            bottom-0
-            left-0
-            w-full
-            h-[140px]
-            md:h-[220px]
-            bg-[#e8e6e1]
-          "
-        />
-      </div>
+        <div className="bg-white px-6 pt-16 pb-16">
+          <div className="flex justify-center gap-4">
 
-      {/* ================= CONTENT ================= */}
-      <div className="relative z-30 px-5 md:px-12 pb-24 md:pb-32">
-
-        {/* TOP SMALL TEXTS */}
-        <div
-          className="
-            flex
-            justify-between
-            gap-4
-            uppercase
-            text-black
-            leading-[1.1]
-            text-[9px]
-            sm:text-[11px]
-            md:text-[15px]
-          "
-        >
-
-          <p>
-            Advocate Of Clean <br />
-            Design
-          </p>
-
-          <p className="text-center">
-            UI/UX + Graphic <br />
-            Design
-          </p>
-
-          <p className="text-right">
-            Coffee + Creativity <br />
-            Design
-          </p>
-        </div>
-
-        {/* MAIN CONTENT */}
-        <div
-          className="
-            mt-16
-            md:mt-24
-            flex
-            flex-col
-            items-center
-            text-center
-          "
-        >
-
-          {/* PARA 1 */}
-          <p
-            className="
-              uppercase
-              text-black
-              leading-[1.28]
-              max-w-[1200px]
-            "
-            style={{
-              fontSize: "clamp(22px, 3vw, 58px)",
-            }}
-          >
-            HEY, I’M SOMANATHAN — A UI/UX & GRAPHIC
-            DESIGNER PASSIONATE ABOUT CREATING CLEAN,
-            PURPOSEFUL, AND VISUALLY ENGAGING DIGITAL
-            EXPERIENCES.
-          </p>
-
-          {/* PARA 2 */}
-          <p
-            className="
-              uppercase
-              text-black
-              leading-[1.35]
-              max-w-[1250px]
-              mt-14
-              md:mt-20
-            "
-            style={{
-              fontSize: "clamp(21px, 2.8vw, 52px)",
-            }}
-          >
-            I WORK ACROSS UI/UX, BRANDING, AND VISUAL
-            STORYTELLING, FOCUSING ON MINIMAL INTERFACES,
-            STRONG TYPOGRAPHY, AND USER-CENTERED DESIGN.
-            MY APPROACH COMBINES CREATIVITY WITH
-            FUNCTIONAL THINKING TO BUILD EXPERIENCES
-            THAT FEEL SIMPLE, MODERN, AND MEANINGFUL.
-          </p>
-
-          {/* PARA 3 */}
-          <p
-            className="
-              uppercase
-              text-black
-              leading-[1.35]
-              max-w-[1150px]
-              mt-14
-              md:mt-20
-            "
-            style={{
-              fontSize: "clamp(21px, 2.8vw, 52px)",
-            }}
-          >
-            FROM DESIGN SYSTEMS AND PROTOTYPING TO BRAND
-            VISUALS AND MOTION-INSPIRED LAYOUTS, I ENJOY
-            TURNING IDEAS INTO EXPERIENCES THAT CONNECT
-            WITH PEOPLE.
-          </p>
-        </div>
-
-        {/* TOOLS */}
-        <div
-          className="
-            mt-20
-            md:mt-28
-            flex
-            items-center
-            justify-center
-            gap-8
-            md:gap-28
-            flex-wrap
-          "
-        >
-
-          {[figma, photoshop, illustrator].map((icon, index) => (
-            <div
-              key={index}
-              className="
-                w-[82px]
-                h-[82px]
-                sm:w-[100px]
-                sm:h-[100px]
-                md:w-[150px]
-                md:h-[150px]
-              "
+            <button
+              onClick={() => window.open("/resume", "_self")}
+              className={buttonClass}
             >
-              <img
-                src={icon}
-                alt=""
-                className="w-full h-full object-contain"
-              />
-            </div>
-          ))}
+              RESUME
+            </button>
+
+            <a
+              href="https://www.linkedin.com/in/somanathan-g-840118272/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={buttonClass}
+            >
+              LINKEDIN
+            </a>
+
+          </div>
         </div>
+
       </div>
+
+      {/* ========================================================================= */}
+      {/* 🖥️ DESKTOP VIEW */}
+      {/* ========================================================================= */}
+      <div className="hidden md:block w-full relative">
+
+        {/* ✅ ONLY GAP FIXED HERE */}
+        <div className="bg-black px-6 md:px-12 lg:px-16 pt-28 md:pt-36 lg:pt-30 pb-90 flex flex-col items-center">
+          <h2
+            className="text-white uppercase text-center w-full"
+            style={{
+              fontFamily: "Anton, sans-serif",
+              fontSize: "clamp(60px, 12vw, 140px)",
+              fontWeight: 400,
+              lineHeight: "100%",
+              letterSpacing: "0.02em"
+            }}
+          >
+            ABOUT SOMANATHAN
+          </h2>
+        </div>
+
+        {/* IMAGE FLOAT (UNCHANGED) */}
+        <div
+          className="absolute left-1/2 transform -translate-x-1/2"
+          style={{
+            bottom: "clamp(80px, 15vw, 120px)",
+            width: "clamp(280px, 35vw, 450px)",
+            height: "clamp(380px, 48vw, 580px)",
+            zIndex: 10
+          }}
+        >
+          <div className="absolute left-2 text-white uppercase font-medium"
+            style={{ fontFamily: "Inter, sans-serif", fontSize: "14px", top: "-30px" }}>
+            WHO'S THIS?
+          </div>
+
+          <div className="absolute right-2 text-white uppercase font-medium"
+            style={{ fontFamily: "Inter, sans-serif", fontSize: "14px", top: "-30px" }}>
+            HELLO, HI, HEY
+          </div>
+
+          <div className="w-full h-full p-2 md:p-3">
+            <img
+              src={aboutImage}
+              alt="Somanathan"
+              className="w-full h-full object-cover shadow-xl"
+            />
+          </div>
+        </div>
+
+        {/* BUTTONS (UNCHANGED) */}
+        <div className="bg-white px-6 md:px-12 lg:px-16 pt-48 md:pt-64 lg:pt-80 pb-12 md:pb-16">
+          <div className="flex justify-center gap-4 md:gap-6">
+
+            <button
+              onClick={() => window.open("/resume", "_self")}
+              className={buttonClass}
+            >
+              RESUME
+            </button>
+
+            <a
+              href="https://www.linkedin.com/in/somanathan-g-840118272/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={buttonClass}
+            >
+              LINKEDIN
+            </a>
+
+          </div>
+        </div>
+
+      </div>
+
     </section>
   );
 };
 
-export default AboutPage;
+export default AboutSection;
