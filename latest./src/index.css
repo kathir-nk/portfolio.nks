@@ -1,19 +1,39 @@
 @import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
 @import "tailwindcss";
 
-* {
-  margin: 0;
-  padding: 0;
+
+/* === REMOVE THIS - It breaks Tailwind spacing === */
+/* * { margin: 0; padding: 0; box-sizing: border-box; } */
+
+/* === USE THIS INSTEAD === */
+*, *::before, *::after {
   box-sizing: border-box;
 }
 
-html,
-body,
-#root {
+html {
   width: 100%;
-  min-height: 100%;
+  background: black;
+  font-family: sans-serif;
+}
+
+body {
+  width: 100%;
+  min-height: 100vh;
   background: black;
   overflow-x: hidden;
-  font-family: sans-serif;
+  overflow-y: auto;
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  background: black;
+}
+
+@font-face {
+  font-family: "Robuck";
+  src: url("./assets/fonts/Robuck.ttf");
 }

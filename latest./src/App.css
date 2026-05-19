@@ -161,6 +161,13 @@
   }
 }
 
+@font-face {
+  font-family: 'Robuck';
+  src: url('./assets/fonts/RobuckRegular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+}
+
 .ticks {
   position: relative;
   width: 100%;

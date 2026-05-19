@@ -1,127 +1,135 @@
-import React from "react";
+import React from 'react';
 
-const FooterSection = () => {
+const Footer = () => {
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
-    <footer className="w-full overflow-hidden">
+    <footer className="w-full">
+      {/* ================== BEIGE SECTION ================== */}
+      <div className="bg-white px-4 md:px-8 lg:px-12 pt-10 md:pt-14">
 
-      {/* ================= TOP ================= */}
-      <div className="bg-[#e8e6e1] px-6 md:px-16 lg:px-24 pt-14 md:pt-20 pb-20 md:pb-28">
-
-        {/* TOP LABELS */}
-        <div className="flex items-center justify-between">
-
-          <h2 className="text-black uppercase text-[8vw] md:text-[3vw] leading-none">
+        {/* === PART 1 === */}
+        <div className="flex justify-between items-start">
+          <span className="text-base md:text-lg font-medium tracking-wide text-black">
             (FOLLOW)
-          </h2>
-
-          <h2 className="text-black uppercase text-[8vw] md:text-[3vw] leading-none">
+          </span>
+          <span className="text-base md:text-lg font-medium tracking-wide text-black">
             (NAVIGATION)
-          </h2>
+          </span>
         </div>
 
-        {/* LINE */}
-        <div className="border-t border-black mt-6 md:mt-8" />
+        <div className="h-6 md:h-8" />
+        <div className="w-full h-[1px] bg-black" />
 
-        {/* CONTENT */}
-        <div className="mt-8 md:mt-10 grid grid-cols-1 md:grid-cols-3 items-start">
+        {/* === PART 2: LINKS === */}
+        <div className="pt-6 md:pt-8 flex justify-between items-start">
 
           {/* LEFT */}
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col">
+            <a href="https://www.instagram.com/stock_designer_?igsh=cHBnNHA0amdsYWdx" target="_blank" rel="noopener noreferrer"
+              className="text-base md:text-xl lg:text-2xl font-medium text-black hover:opacity-60">
+              INSTAGRAM
+            </a>
 
-            {["INSTAGRAM", "LINKEDIN", "BEHANCE", "EMAIL"].map((item) => (
-              <a
-                key={item}
-                href="/"
-                className="
-                  text-black
-                  uppercase
-                  text-[7vw]
-                  md:text-[2.1vw]
-                  leading-[0.95]
-                  hover:opacity-60
-                  duration-300
-                  w-fit
-                "
-              >
-                {item}
-              </a>
-            ))}
+            <div className="h-3 md:h-4" />
+
+            <a href="https://www.linkedin.com/in/somanathan-g-840118272/" target="_blank" rel="noopener noreferrer"
+              className="text-base md:text-xl lg:text-2xl font-medium text-black hover:opacity-60">
+              LINKEDIN
+            </a>
+
+            <div className="h-3 md:h-4" />
+
+            <a href="https://www.behance.net/somugs" target="_blank" rel="noopener noreferrer"
+              className="text-base md:text-xl lg:text-2xl font-medium text-black hover:opacity-60">
+              BEHANCE
+            </a>
+
+            <div className="h-3 md:h-4" />
+
+            <a
+  href="mailto:somanathan@gmail.com?subject=Project%20Inquiry"
+  className="text-base md:text-xl lg:text-2xl font-medium text-black hover:opacity-60"
+>
+  EMAIL
+</a>
           </div>
 
-          {/* CENTER */}
-          <div className="flex justify-center mt-14 md:mt-20">
+          {/* RIGHT NAV LINKS (FIXED CLICK BEHAVIOR) */}
+          <div className="flex flex-col items-end">
+            <a href="/" className="text-base md:text-xl lg:text-2xl font-medium text-black hover:opacity-60">
+              HOME
+            </a>
 
-            <button
-              onClick={() =>
-                window.scrollTo({
-                  top: 0,
-                  behavior: "smooth",
-                })
-              }
-              className="
-                text-black
-                uppercase
-                text-[6vw]
-                md:text-[2vw]
-                leading-none
-                hover:opacity-60
-                duration-300
-              "
-            >
-              BACK TO TOP
-            </button>
-          </div>
+            <div className="h-3 md:h-4" />
 
-          {/* RIGHT */}
-          <div className="flex flex-col gap-1 md:items-end mt-14 md:mt-0">
+            <a href="/work" className="text-base md:text-xl lg:text-2xl font-medium text-black hover:opacity-60">
+              WORKS
+            </a>
 
-            {["HOME", "WORKS", "ABOUT"].map((item) => (
-              <a
-                key={item}
-                href="/"
-                className="
-                  text-black
-                  uppercase
-                  text-[7vw]
-                  md:text-[2.1vw]
-                  leading-[0.95]
-                  hover:opacity-60
-                  duration-300
-                  w-fit
-                "
-              >
-                {item}
-              </a>
-            ))}
+            <div className="h-3 md:h-4" />
+
+            <a href="/about" className="text-base md:text-xl lg:text-2xl font-medium text-black hover:opacity-60">
+              ABOUT
+            </a>
           </div>
         </div>
-      </div>
 
-      {/* ================= BOTTOM ================= */}
-      <div className="bg-black overflow-hidden">
-
-        <div className="w-full flex justify-center items-center pt-8 md:pt-10">
-
-          <h1
-            className="
-              text-white
-              uppercase
-              whitespace-nowrap
-              leading-[0.82]
-              tracking-[-0.05em]
-              text-center
-            "
-            style={{
-              fontSize: "clamp(80px, 14vw, 320px)",
-              fontFamily: "Anton, sans-serif",
-            }}
+        {/* BACK TO TOP */}
+        <div className="mt-3 md:mt-4 flex justify-center">
+          <button
+            onClick={scrollToTop}
+            className="text-base md:text-xl lg:text-2xl font-medium text-black hover:opacity-60"
           >
-            TALK LET’S TALK LET’S
-          </h1>
+            BACK TO TOP
+          </button>
+        </div>
+
+        <div className="pt-12 md:pt-16 lg:pt-20" />
+      </div>
+
+      {/* ================== MARQUEE ================== */}
+      <div className="bg-black py-6 md:py-8 overflow-hidden">
+        <div className="marquee-container flex whitespace-nowrap">
+          <div className="marquee-content flex items-center">
+            <span className="text-white text-6xl md:text-8xl lg:text-9xl font-black mx-4">
+              LET'S TALK
+            </span>
+            <span className="text-white text-6xl md:text-8xl lg:text-9xl font-black mx-4">
+              LET'S TALK
+            </span>
+          </div>
+
+          <div className="marquee-content flex items-center" aria-hidden="true">
+            <span className="text-white text-6xl md:text-8xl lg:text-9xl font-black mx-4">
+              LET'S TALK
+            </span>
+            <span className="text-white text-6xl md:text-8xl lg:text-9xl font-black mx-4">
+              LET'S TALK
+            </span>
+          </div>
         </div>
       </div>
+
+      <style>{`
+        .marquee-container {
+          display: flex;
+          overflow: hidden;
+        }
+        .marquee-content {
+          flex-shrink: 0;
+          min-width: 100%;
+          animation: scroll 20s linear infinite;
+        }
+        @keyframes scroll {
+          from { transform: translateX(0); }
+          to { transform: translateX(-100%); }
+        }
+      `}</style>
     </footer>
   );
 };
 
-export default FooterSection;
+export default Footer;
