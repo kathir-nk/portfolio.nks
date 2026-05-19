@@ -12,18 +12,41 @@ const navLinks = [
 
 export default function Header() {
   const [mobileMenu, setMobileMenu] = useState(false);
+  const [showHeader, setShowHeader] = useState(true);
+
   const location = useLocation();
-  
-  // FIXED: Active Dark Mode Page Flags
+
   const isAboutPage = location.pathname === "/about";
   const isWorkPage = location.pathname === "/work";
-  
-  // Combines both routes into a single truth flag for absolute safety
+
   const isDarkModePage = isAboutPage || isWorkPage;
 
   useEffect(() => {
     document.body.style.overflow = mobileMenu ? "hidden" : "auto";
   }, [mobileMenu]);
+
+  // 🔥 AUTO HIDE HEADER ON SCROLL
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+
+    const handleScroll = () => {
+      if (window.scrollY > lastScrollY) {
+        // scrolling down
+        setShowHeader(false);
+      } else {
+        // scrolling up
+        setShowHeader(true);
+      }
+
+      lastScrollY = window.scrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <>
@@ -37,6 +60,7 @@ export default function Header() {
           w-full
           transition-all
           duration-500
+          ${showHeader ? "translate-y-0" : "-translate-y-full"}
           ${isDarkModePage ? "bg-black text-white" : "bg-white text-black"}
         `}
       >

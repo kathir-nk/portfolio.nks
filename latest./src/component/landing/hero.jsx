@@ -16,66 +16,81 @@ export default function Hero() {
   const scrollDownRef = useRef(null);
   const floatingTweenRef = useRef(null);
 
-  // ============================================
-  // DESKTOP: GSAP Animation Setup
-  // ============================================
-
+  // 🔥 SAFE TEXT MOVEMENT
   const getSafeX = () => {
     if (typeof window === "undefined") return 60;
+
     const calculated = window.innerWidth * 0.12;
+
     return Math.min(calculated, 180);
   };
 
+  // 🔥 SAFE VIDEO SIZE
   const getVideoSize = () => {
-    if (typeof window === "undefined") return { width: 560, height: 360 };
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    let width, height;
-    if (vw < 1024) {
-      width = Math.min(vw * 0.55, 520);
-      height = Math.min(vh * 0.32, 340);
-    } else if (vw < 1440) {
-      width = Math.min(vw * 0.50, 680);
-      height = Math.min(vh * 0.36, 420);
-    } else {
-      width = Math.min(vw * 0.45, 800);
-      height = Math.min(vh * 0.38, 480);
+    if (typeof window === "undefined") {
+      return { width: 520, height: 320 };
     }
+
+    const vw = window.innerWidth;
+
+    let width;
+    let height;
+
+    if (vw < 1024) {
+      width = Math.min(vw * 0.42, 420);
+      height = width * 0.62;
+    } else if (vw < 1440) {
+      width = Math.min(vw * 0.38, 560);
+      height = width * 0.62;
+    } else {
+      width = Math.min(vw * 0.34, 640);
+      height = width * 0.62;
+    }
+
+    width = Math.max(width, 320);
+    height = Math.max(height, 220);
+
     return { width, height };
   };
 
   const getSafeYPhase1 = () => {
     if (typeof window === "undefined") return 0;
-    const vh = window.innerHeight;
-    return Math.min(vh * 0.18, 140);
+
+    return Math.min(window.innerHeight * 0.18, 140);
   };
 
   const getSafeYPhase2 = () => {
     if (typeof window === "undefined") return 0;
-    return window.innerHeight * 0.04;
+
+    return window.innerHeight * 0.10;
   };
 
   useEffect(() => {
-    // 🔒 MOBILE: Skip ALL GSAP — just static layout
-    if (window.innerWidth <= 768) return;
+    const isDesktop = window.innerWidth > 768;
+
+    if (!isDesktop) return;
 
     const initTimer = setTimeout(() => {
+
       const ctx = gsap.context(() => {
 
+        // ==========================================
+        // VIDEO SIZE SET
+        // ==========================================
         const updateVideoSize = () => {
           const size = getVideoSize();
-          if (videoWrapRef.current) {
-            gsap.set(videoWrapRef.current, {
-              width: size.width,
-              height: size.height
-            });
-          }
+
+          gsap.set(videoWrapRef.current, {
+            width: size.width,
+            height: size.height
+          });
         };
+
         updateVideoSize();
 
-        // ============================================
-        // ENTRANCE ANIMATIONS (Desktop Only)
-        // ============================================
+        // ==========================================
+        // ENTRANCE
+        // ==========================================
         const entranceTl = gsap.timeline();
 
         entranceTl.from(heroRef.current, {
@@ -123,10 +138,12 @@ export default function Hero() {
           opacity: 0,
           y: 20,
           duration: 1,
-          delay: 1.5,
           ease: "power2.out"
-        });
+        }, 1);
 
+        // ==========================================
+        // FLOATING
+        // ==========================================
         floatingTweenRef.current = gsap.to(videoWrapRef.current, {
           y: "+=14",
           duration: 3,
@@ -135,226 +152,418 @@ export default function Hero() {
           ease: "sine.inOut"
         });
 
-        // ============================================
-        // GSAP MATCHMEDIA ENGINE
-        // ============================================
-        let mm = gsap.matchMedia();
+        // ==========================================
+        // SCROLL TIMELINE
+        // ==========================================
+        const scrollTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: heroRef.current,
+            start: "top top",
+            end: "+=240%",
+            pin: true,
+            scrub: 1.2,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
 
-        mm.add({
-          isDesktop: "(min-width: 769px)"
-        }, () => {
+            onRefresh: () => {
+              updateVideoSize();
+            },
 
-          const scrollTl = gsap.timeline({
-            scrollTrigger: {
-              trigger: heroRef.current,
-              start: "top top",
-              end: "+=300%",
-              pin: true,
-              scrub: 1.5,
-              anticipatePin: 1,
-              invalidateOnRefresh: true,
-              onRefresh: () => {
-                updateVideoSize();
-              },
+            onLeaveBack: () => {
 
-              onLeaveBack: () => {
-                gsap.to(titleRef.current, { opacity: 1, y: 0, duration: 0.3 });
-                gsap.to(labelRowRef.current, { opacity: 1, duration: 0.3 });
-                gsap.to(leftTextRef.current, { x: 0, opacity: 1, duration: 0.3 });
-                gsap.to(rightTextRef.current, { x: 0, opacity: 1, duration: 0.3 });
+              const size = getVideoSize();
 
-                const size = getVideoSize();
-                gsap.to(videoWrapRef.current, {
-                  width: size.width,
-                  height: size.height,
-                  scale: 1,
-                  y: 0,
-                  duration: 0.3
-                });
+              gsap.to(videoWrapRef.current, {
+                width: size.width,
+                height: size.height,
+                scale: 1,
+                y: 0,
+                duration: 0.3
+              });
 
-                gsap.to(scrollDownRef.current, {
-                  opacity: 1,
-                  y: 0,
-                  duration: 0.3
-                });
+              gsap.to(titleRef.current, {
+                opacity: 1,
+                y: 0,
+                duration: 0.3
+              });
 
-                if (floatingTweenRef.current) floatingTweenRef.current.resume();
+              gsap.to(labelRowRef.current, {
+                opacity: 1,
+                duration: 0.3
+              });
+
+              gsap.to(leftTextRef.current, {
+                x: 0,
+                opacity: 1,
+                duration: 0.3
+              });
+
+              gsap.to(rightTextRef.current, {
+                x: 0,
+                opacity: 1,
+                duration: 0.3
+              });
+
+              gsap.to(scrollDownRef.current, {
+                opacity: 1,
+                y: 0,
+                duration: 0.3
+              });
+
+              if (floatingTweenRef.current) {
+                floatingTweenRef.current.resume();
               }
             }
-          });
-
-          // PHASE 1 - Text spreads to sides
-          scrollTl.fromTo(
-            leftTextRef.current,
-            { x: 0, opacity: 1 },
-            { x: getSafeX(), opacity: 1, ease: "none" },
-            0
-          );
-
-          scrollTl.fromTo(
-            rightTextRef.current,
-            { x: 0, opacity: 1 },
-            { x: -getSafeX(), opacity: 1, ease: "none" },
-            0
-          );
-
-          scrollTl.fromTo(
-            videoWrapRef.current,
-            { y: 0 },
-            { y: getSafeYPhase1(), ease: "none" },
-            0
-          );
-
-          scrollTl.fromTo(
-            titleRef.current,
-            { opacity: 1, y: 0 },
-            { opacity: 0.15, y: -30, ease: "none" },
-            0
-          );
-
-          scrollTl.fromTo(
-            labelRowRef.current,
-            { opacity: 1 },
-            { opacity: 0.3, ease: "none" },
-            0
-          );
-
-          scrollTl.fromTo(
-            scrollDownRef.current,
-            { opacity: 1, y: 0 },
-            { opacity: 0, y: 20, ease: "power2.in" },
-            0
-          );
-
-          // ============================================
-          // PHASE 2 - Video grows OVER text
-          // ============================================
-          const expandedSize = getVideoSize();
-
-          scrollTl.to(videoWrapRef.current, {
-            width: expandedSize.width * 1.5,
-            height: expandedSize.height * 1.4,
-            scale: 1.15,
-            y: getSafeYPhase1() + getSafeYPhase2(),
-            ease: "none"
-          }, 0.5);
-
-          scrollTl.to([leftTextRef.current, rightTextRef.current], {
-            x: (i) => i === 0 ? getSafeX() * 1.3 : -getSafeX() * 1.3,
-            opacity: 0.3,
-            ease: "power2.in"
-          }, 0.5);
-
-          scrollTl.to([titleRef.current, labelRowRef.current], {
-            opacity: 0,
-            ease: "power2.in"
-          }, 0.6);
-
+          }
         });
+
+        // ==========================================
+        // 🔥 TEXT MOVE TO CENTER
+        // ==========================================
+        scrollTl.to(leftTextRef.current, {
+          x: getSafeX(),
+          ease: "none"
+        }, 0);
+
+        scrollTl.to(rightTextRef.current, {
+          x: -getSafeX(),
+          ease: "none"
+        }, 0);
+
+        // ==========================================
+        // 🔥 VIDEO MOVE DOWN
+        // ==========================================
+        scrollTl.to(videoWrapRef.current, {
+          y: getSafeYPhase1(),
+          ease: "none"
+        }, 0);
+
+        // ==========================================
+        // TITLE FADE
+        // ==========================================
+        scrollTl.to(titleRef.current, {
+          opacity: 0.15,
+          y: -30,
+          ease: "none"
+        }, 0);
+
+        scrollTl.to(labelRowRef.current, {
+          opacity: 0.3,
+          ease: "none"
+        }, 0);
+
+        scrollTl.to(scrollDownRef.current, {
+          opacity: 0,
+          y: 20,
+          ease: "power2.in"
+        }, 0);
+
+        // ==========================================
+        // 🔥 CENTER TEXT SHOW
+        // ==========================================
+        scrollTl.to([leftTextRef.current, rightTextRef.current], {
+          opacity: 1,
+          scale: 1.05,
+          ease: "power2.out"
+        }, 0.35);
+
+        // ==========================================
+        // VIDEO EXPAND
+        // ==========================================
+        const expandedSize = getVideoSize();
+
+        scrollTl.to(videoWrapRef.current, {
+          width: expandedSize.width * 1.6,
+          height: expandedSize.height * 1.5,
+          scale: 1.15,
+          y: getSafeYPhase1() + getSafeYPhase2(),
+          ease: "none"
+        }, 0.45);
+
+        // ==========================================
+        // TEXT FADE LITTLE
+        // ==========================================
+        scrollTl.to([leftTextRef.current, rightTextRef.current], {
+          opacity: 0.12,
+          ease: "power2.in"
+        }, 0.55);
+
+        scrollTl.to([titleRef.current, labelRowRef.current], {
+          opacity: 0,
+          ease: "power2.in"
+        }, 0.55);
 
       }, heroRef);
 
       return () => ctx.revert();
+
     }, 100);
 
     return () => {
       clearTimeout(initTimer);
-      ScrollTrigger.getAll().forEach(t => t.kill());
+
+      ScrollTrigger.getAll().forEach((t) => t.kill());
     };
+
   }, []);
 
   return (
     <section
       ref={heroRef}
-      className="relative w-full overflow-hidden bg-white min-h-[100dvh] h-auto pb-12 md:pb-0"
+      className="relative w-full overflow-hidden bg-white"
+      style={{ minHeight: "100dvh" }}
     >
-      <div className="relative flex h-full w-full flex-col items-center">
+
+      <div
+        className="relative flex flex-col items-center w-full"
+        style={{ minHeight: "100dvh" }}
+      >
 
         {/* ========================================== */}
-        {/* HEADER SPACE - Same for both               */}
-        {/* ========================================== */}
-        <div className="h-[60px] md:h-[120px] lg:h-[160px] xl:h-[180px] w-full shrink-0" />
-
-        {/* ========================================== */}
-        {/* TITLE - Same for both                      */}
-        {/* ========================================== */}
-        <div className="w-full px-4 shrink-0 mt-2 md:mt-4 lg:mt-8 flex justify-center">
-          <h1
-            ref={titleRef}
-            className="text-center uppercase leading-[100%] text-[32px] sm:text-[56px] md:text-[80px] lg:text-[120px] xl:text-[160px] 2xl:text-[200px] text-black"
-            style={{
-              fontFamily: "Anton, sans-serif",
-              fontWeight: 400,
-              letterSpacing: "0.02em"
-            }}
-          >
-            SOMANATHAN G
-          </h1>
-        </div>
-
-        {/* ========================================== */}
-        {/* LABEL ROW - Same for both                  */}
+        {/* DESKTOP */}
         {/* ========================================== */}
         <div
-          ref={labelRowRef}
-          className="flex justify-between w-full max-w-[520px] px-6 mt-3 mb-3 md:mb-2 shrink-0"
+          className="hidden md:flex flex-col items-center w-full"
+          style={{ minHeight: "100dvh" }}
         >
-          <span className="font-bold uppercase tracking-[0.2em] text-[9px] sm:text-[10px] md:text-[11px] text-gray-700">
-            UI/UX & Graphic Designer
-          </span>
-          <span className="font-bold uppercase tracking-[0.2em] text-[9px] sm:text-[10px] md:text-[11px] text-gray-700">
-            2024
-          </span>
-        </div>
 
-        {/* ========================================== */}
-        {/* DESKTOP: Animated Layout (md and up)       */}
-        {/* ========================================== */}
-        <div className="hidden md:block relative w-full flex-1 mt-2 min-h-[320px]">
+          {/* HEADER SPACE */}
+          <div
+            className="w-full shrink-0"
+            style={{ height: "clamp(60px, 12vh, 180px)" }}
+          />
 
-          {/* LAYER 1: TEXT (z-10 = Behind) */}
-          <div className="absolute inset-0 flex items-center justify-center" style={{ zIndex: 10 }}>
-            <div className="flex items-center gap-6 md:gap-10 lg:gap-16">
+          {/* TITLE */}
+          <div
+            className="w-full px-4 shrink-0 flex justify-center"
+            style={{ marginTop: "clamp(8px, 2vh, 32px)" }}
+          >
+            <h1
+              ref={titleRef}
+              className="text-center uppercase leading-[100%] text-black"
+              style={{
+                fontFamily: "Anton, sans-serif",
+                fontWeight: 400,
+                letterSpacing: "0.02em",
+                fontSize: "clamp(32px, 12vw, 200px)"
+              }}
+            >
+              SOMANATHAN G
+            </h1>
+          </div>
 
-              <div ref={leftTextRef}>
-                <h2 className="font-black uppercase leading-none tracking-tighter text-[20px] md:text-[32px] lg:text-[44px] xl:text-[56px] 2xl:text-[68px] whitespace-nowrap text-black">
-                  A VISUAL
-                </h2>
-              </div>
+          {/* LABEL */}
+          <div
+            ref={labelRowRef}
+            className="flex justify-between w-full max-w-[520px] px-6 shrink-0"
+            style={{
+              marginTop: "clamp(8px, 2vh, 24px)",
+              marginBottom: "clamp(8px, 2vh, 16px)"
+            }}
+          >
+            <span
+              className="font-bold uppercase text-gray-700"
+              style={{
+                fontSize: "clamp(8px, 1vw, 11px)",
+                letterSpacing: "0.2em"
+              }}
+            >
+              UI/UX & Graphic Designer
+            </span>
 
-              {/* SPACER matching video size */}
-              <div 
-                className="shrink-0"
+            <span
+              className="font-bold uppercase text-gray-700"
+              style={{
+                fontSize: "clamp(8px, 1vw, 11px)",
+                letterSpacing: "0.2em"
+              }}
+            >
+              2024
+            </span>
+          </div>
+
+          {/* CONTENT */}
+          <div
+            className="relative w-full flex-1"
+            style={{ minHeight: "320px" }}
+          >
+
+            {/* TEXT */}
+            <div
+              className="absolute inset-0 flex items-center justify-center"
+              style={{ zIndex: 10 }}
+            >
+
+              <div
+                className="flex items-center"
                 style={{
-                  width: "clamp(320px, 50vw, 680px)",
-                  height: "clamp(240px, 32vh, 420px)"
+                  gap: "clamp(16px, 2vw, 32px)"
                 }}
-              />
+              >
 
-              <div ref={rightTextRef}>
-                <h2 className="font-black uppercase leading-none tracking-tighter text-[20px] md:text-[32px] lg:text-[44px] xl:text-[56px] 2xl:text-[68px] whitespace-nowrap text-black">
-                  DESIGNER
-                </h2>
+                {/* LEFT */}
+                <div ref={leftTextRef}>
+                  <h2
+                    className="font-black uppercase leading-none tracking-tighter whitespace-nowrap text-black"
+                    style={{
+                      fontSize: "clamp(20px, 4vw, 68px)"
+                    }}
+                  >
+                    A VISUAL
+                  </h2>
+                </div>
+
+                {/* SPACER */}
+                <div
+                  className="shrink-0"
+                  style={{
+                    width: "clamp(320px, 42vw, 640px)",
+                    height: "clamp(220px, 26vw, 400px)"
+                  }}
+                />
+
+                {/* RIGHT */}
+                <div ref={rightTextRef}>
+                  <h2
+                    className="font-black uppercase leading-none tracking-tighter whitespace-nowrap text-black"
+                    style={{
+                      fontSize: "clamp(20px, 4vw, 68px)"
+                    }}
+                  >
+                    DESIGNER
+                  </h2>
+                </div>
+
+              </div>
+            </div>
+
+            {/* VIDEO */}
+            <div
+              className="absolute inset-0 flex items-center justify-center"
+              style={{
+                zIndex: 20,
+                pointerEvents: "none"
+              }}
+            >
+
+              <div
+                ref={videoWrapRef}
+                className="relative overflow-hidden shadow-2xl"
+                style={{
+                  width: "clamp(320px, 42vw, 640px)",
+                  height: "clamp(220px, 26vw, 400px)",
+                  pointerEvents: "auto"
+                }}
+              >
+
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="h-full w-full object-cover"
+                >
+                  <source src={heroVideo} type="video/mp4" />
+                </video>
+
               </div>
 
             </div>
+
           </div>
 
-          {/* LAYER 2: VIDEO (z-20 = On Top) */}
-          <div 
-            className="absolute inset-0 flex items-center justify-center pointer-events-none"
-            style={{ zIndex: 20 }}
+          {/* SCROLL */}
+          <div
+            ref={scrollDownRef}
+            className="absolute hidden md:block"
+            style={{
+              bottom: "clamp(16px, 3vh, 30px)",
+              left: "50%",
+              transform: "translateX(-50%)"
+            }}
           >
-            <div
-              ref={videoWrapRef}
-              className="relative overflow-hidden shadow-2xl pointer-events-auto"
+            <p
+              className="font-bold uppercase text-gray-500"
               style={{
-                width: "clamp(320px, 50vw, 680px)",
-                height: "clamp(240px, 32vh, 420px)"
+                fontSize: "9px",
+                letterSpacing: "0.15em"
               }}
             >
+              SCROLL DOWN
+            </p>
+          </div>
+
+        </div>
+
+        {/* ========================================== */}
+        {/* MOBILE */}
+        {/* ========================================== */}
+        <div
+          className="flex md:hidden flex-col items-center w-full"
+          style={{
+            minHeight: "100dvh",
+            paddingTop: "80px",
+            paddingBottom: "40px"
+          }}
+        >
+
+          <div className="w-full px-4 flex justify-center shrink-0">
+            <h1
+              className="text-center uppercase leading-[100%] text-black"
+              style={{
+                fontFamily: "Anton, sans-serif",
+                fontWeight: 400,
+                letterSpacing: "0.02em",
+                fontSize: "clamp(36px, 14vw, 80px)"
+              }}
+            >
+              SOMANATHAN G
+            </h1>
+          </div>
+
+          <div
+            className="flex justify-between w-full max-w-[320px] px-4 shrink-0"
+            style={{
+              marginTop: "12px",
+              marginBottom: "24px"
+            }}
+          >
+
+            <span
+              className="font-bold uppercase text-gray-700"
+              style={{
+                fontSize: "9px",
+                letterSpacing: "0.2em"
+              }}
+            >
+              UI/UX & Graphic Designer
+            </span>
+
+            <span
+              className="font-bold uppercase text-gray-700"
+              style={{
+                fontSize: "9px",
+                letterSpacing: "0.2em"
+              }}
+            >
+              2024
+            </span>
+
+          </div>
+
+          {/* VIDEO */}
+          <div className="flex-1 flex items-center justify-center w-full px-4">
+
+            <div
+              className="relative overflow-hidden shadow-2xl w-full"
+              style={{
+                maxWidth: "380px",
+                aspectRatio: "16/10"
+              }}
+            >
+
               <video
-                ref={videoRef}
                 autoPlay
                 muted
                 loop
@@ -363,58 +572,46 @@ export default function Hero() {
               >
                 <source src={heroVideo} type="video/mp4" />
               </video>
+
             </div>
+
           </div>
 
-        </div>
+          {/* TEXT */}
+          <div
+            className="flex flex-col items-center text-center gap-1 shrink-0"
+            style={{
+              marginTop: "24px",
+              marginBottom: "20px"
+            }}
+          >
 
-        {/* ========================================== */}
-        {/* MOBILE: Static Clean Layout (below md)     */}
-        {/* ========================================== */}
-        {/* 
-          NO GSAP, NO animation, NO scroll hijack
-          Just clean static flex layout
-        */}
-        <div className="flex md:hidden flex-col items-center w-full mt-4 px-4 gap-5">
-
-          {/* Video first - full width */}
-          <div className="relative overflow-hidden shadow-2xl w-full max-w-[400px] aspect-[16/10]">
-            <video 
-              autoPlay 
-              muted 
-              loop 
-              playsInline 
-              className="h-full w-full object-cover"
+            <h2
+              className="font-black uppercase text-black"
+              style={{
+                fontSize: "clamp(22px, 7vw, 32px)",
+                letterSpacing: "-0.02em"
+              }}
             >
-              <source src={heroVideo} type="video/mp4" />
-            </video>
-          </div>
-
-          {/* Text below video */}
-          <div className="flex flex-col items-center text-center gap-1">
-            <h2 className="font-black uppercase leading-none tracking-tighter text-[28px] sm:text-[36px] text-black">
               A VISUAL
             </h2>
-            <h2 className="font-black uppercase leading-none tracking-tighter text-[28px] sm:text-[36px] text-black">
+
+            <h2
+              className="font-black uppercase text-black"
+              style={{
+                fontSize: "clamp(22px, 7vw, 32px)",
+                letterSpacing: "-0.02em"
+              }}
+            >
               DESIGNER
             </h2>
+
           </div>
 
-        </div>
-
-        {/* ========================================== */}
-        {/* SCROLL DOWN - Desktop only                 */}
-        {/* ========================================== */}
-        <div
-          ref={scrollDownRef}
-          className="absolute bottom-[20px] md:bottom-[30px] left-1/2 -translate-x-1/2 hidden md:block"
-        >
-          <p className="font-bold uppercase tracking-[0.15em] text-[9px] text-gray-500">
-            SCROLL DOWN
-          </p>
         </div>
 
       </div>
+
     </section>
   );
 }
